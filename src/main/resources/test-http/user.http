@@ -1,0 +1,6 @@
+POST http://{{location}}/user/register
+Content-Type: application/x-www-form-urlencoded
+
+nickname=测试注册1&password=123456&email=test@abc.com
+
+###
