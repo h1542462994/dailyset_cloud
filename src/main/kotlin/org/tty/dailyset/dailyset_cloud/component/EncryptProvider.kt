@@ -1,8 +1,7 @@
-package org.tty.dailyset.dailyset_cloud.service
+package org.tty.dailyset.dailyset_cloud.component
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import org.tty.dailyset.dailyset_cloud.component.EnvironmentVars
 import org.tty.dailyset.dailyset_cloud.util.byte2Hex
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
@@ -28,5 +27,6 @@ class EncryptProvider {
     fun encrypt(uid: String, password: String): String {
         return sha256(uid + environmentVars.encryptSalt + password)
     }
+
 
 }

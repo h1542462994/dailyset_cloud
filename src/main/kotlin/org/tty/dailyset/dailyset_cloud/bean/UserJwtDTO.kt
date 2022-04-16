@@ -6,5 +6,6 @@ data class UserJwtDTO(
     val uid: Int,
     val expiredAt: Date,
     val issuedAt: Date,
-    val valid: Boolean
+    val valid: Boolean,
+    val deviceCode: String,
 )

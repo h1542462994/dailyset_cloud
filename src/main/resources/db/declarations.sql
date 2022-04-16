@@ -28,4 +28,14 @@ CREATE TABLE IF NOT EXISTS `sys_env` (
     `next_uid_generate` INTEGER NOT NULL UNIQUE # 最后分配的用户uid
 );
 
+# create table `user_activity` dsl
+CREATE TABLE IF NOT EXISTS `user_activity` (
+    `uid` INTEGER NOT NULL, # 用户标识，唯一，从100001递增
+    `device_code` VARCHAR(256) NOT NULL,
+    `device_name` VARCHAR(256) NOT NULL,
+    `platform_code` INTEGER DEFAULT 0,
+    `state` INTEGER DEFAULT 0,
+    `last_active` DATETIME NOT NULL
+)
+
 

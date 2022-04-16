@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.core.env.get
 import org.springframework.stereotype.Component
+import org.tty.dailyset.dailyset_cloud.bean.enums.Profile
 import javax.annotation.PostConstruct
 
 @Suppress("PropertyName")
@@ -20,8 +21,14 @@ class EnvironmentVars {
     private lateinit var _jwtSecret: String
     private lateinit var _jwtTokenExpireTime: String
     private lateinit var _jwtTokenIssuer: String
+    private lateinit var _profile: String
 
     private val logger = LoggerFactory.getLogger(EnvironmentVars::class.java)
+
+    /**
+     * begin uid: 100001
+     */
+    val beginUid = 100001
 
     /**
      * defaultPortraitFileName: `dailyset.env.default_portrait`
@@ -47,6 +54,19 @@ class EnvironmentVars {
 
     val jwtTokenIssuer: String get() = _jwtTokenIssuer
 
+    val profile: Profile get() = when (_profile) {
+        "prod" -> {
+            Profile.PROD
+        }
+        "pre" -> {
+            Profile.PRE
+        }
+        else -> {
+            Profile.DEV
+        }
+    }
+
+
     @PostConstruct
     fun init() {
         _defaultPortraitFileName = context.environment["dailyset.env.default_portrait"] ?: ""
@@ -55,6 +75,7 @@ class EnvironmentVars {
         _jwtSecret = context.environment["dailyset.env.jwt.secret"] ?: ""
         _jwtTokenExpireTime = context.environment["dailyset.env.jwt.token_expire_time"] ?: "43200000"
         _jwtTokenIssuer = context.environment["dailyset.env.jwt.token_issuer"] ?: ""
+        _profile = context.environment.activeProfiles.firstOrNull() ?: ""
 
         if (_defaultPortraitFileName.isEmpty()) {
             logger.error("App/ Environment variable (dailyset.env.default_portrait) is empty.")

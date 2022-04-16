@@ -4,5 +4,5 @@ class UserRegisterResp(
     val uid: Int,
     val nickname: String,
     val email: String,
-    val portrait: String
+    val portraitId: String
 )

@@ -2,6 +2,7 @@ package org.tty.dailyset.dailyset_cloud.util
 
 import okhttp3.internal.and
 import java.io.File
+import java.util.UUID
 
 fun File.child(name: String): File = File(this, name)
 
@@ -21,6 +22,22 @@ fun byte2Hex(bytes: ByteArray): String {
     return stringBuilder.toString()
 }
 
-fun anyEmpty(vararg texts: String?): Boolean {
+fun anyTextEmpty(vararg texts: String?): Boolean {
     return texts.any { it.isNullOrEmpty() }
+}
+
+fun anyIntEmpty(vararg ints: Int?): Boolean {
+    return ints.any { it == null }
+}
+
+fun uuid(): String {
+    return UUID.randomUUID().toString()
+}
+
+fun getToken(auth: String): String?{
+    return if (auth.startsWith("Bearer ")) {
+        auth.substring("Bearer ".length)
+    } else {
+        null
+    }
 }

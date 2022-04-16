@@ -1,6 +1,24 @@
+### /user/register
+
 POST http://{{location}}/user/register
 Content-Type: application/x-www-form-urlencoded
 
 nickname=测试注册1&password=123456&email=test@abc.com
 
-###
+### /user/login
+
+POST http://{{location}}/user/login
+Content-Type: application/x-www-form-urlencoded
+
+uid=100001&password=test@password&deviceCode=3fffb736-ebc1-429e-8a54-f66670fd7064&deviceName=cht&platformCode=2
+
+> {% client.global.set("auth_token", response.body.data.token); %}
+
+### user/state
+POST http://{{location}}/user/state
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer {{auth_token}}
+
+### /me
+GET http://{{location}}/me
+Authorization: Bearer {{auth_token}}
