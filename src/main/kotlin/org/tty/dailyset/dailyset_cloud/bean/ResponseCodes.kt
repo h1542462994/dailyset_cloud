@@ -19,7 +19,7 @@ object ResponseCodes {
     /**
      * userNotExist: 101
      */
-    val ResponseCodes.userNoExist: Int get() = 101
+    val ResponseCodes.userNoExists: Int get() = 101
 
     /**
      * passwordError: 102

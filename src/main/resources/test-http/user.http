@@ -1,3 +1,7 @@
+### /
+GET http://{{location}}/
+
+
 ### /user/register
 
 POST http://{{location}}/user/register

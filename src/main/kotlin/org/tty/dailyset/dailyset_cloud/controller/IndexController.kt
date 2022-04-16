@@ -9,6 +9,7 @@ package org.tty.dailyset.dailyset_cloud.controller
 
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.tty.dailyset.dailyset_cloud.auth.Anonymous
 import org.tty.dailyset.dailyset_cloud.bean.Responses
 import org.tty.dailyset.dailyset_cloud.bean.UserState
 import org.tty.dailyset.dailyset_cloud.bean.isActive
@@ -21,6 +22,7 @@ class IndexController {
     /**
      * to check the health of the cloud service.
      */
+    @Anonymous
     @RequestMapping("/")
     fun index(): Responses<String> {
         return Responses.ok(data = "hello ?dailyset_cloud?")

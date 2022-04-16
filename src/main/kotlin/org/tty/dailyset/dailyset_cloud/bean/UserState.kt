@@ -4,6 +4,7 @@ package org.tty.dailyset.dailyset_cloud.bean
 
 import org.tty.dailyset.dailyset_cloud.bean.entity.User
 import org.tty.dailyset.dailyset_cloud.bean.entity.UserActivity
+import org.tty.dailyset.dailyset_cloud.bean.resp.UserStateResp
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -19,4 +20,21 @@ fun UserState?.isActive(): Boolean {
     }
 
     return this != null && user != null && userActivity != null
+}
+
+fun UserState?.castToUserStateResp(): UserStateResp {
+    val user = this!!.user!!
+    val userActivity = this.userActivity!!
+
+    return UserStateResp(
+        uid = user.uid,
+        nickname = user.nickname,
+        email = user.email,
+        portraitId = user.portraitId,
+        deviceCode = userActivity.deviceCode,
+        deviceName = userActivity.deviceName,
+        platformCode = userActivity.platformCode,
+        state = userActivity.state,
+        lastActive = userActivity.lastActive
+    )
 }

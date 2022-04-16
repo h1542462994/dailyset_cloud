@@ -11,7 +11,7 @@ import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.fail
 import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.passwordError
 import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.success
 import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.tokenError
-import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.userNoExist
+import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.userNoExists
 
 /**
  * data class of response
@@ -44,7 +44,7 @@ data class Responses<T>(
          * user no exist response entity.
          */
         fun <T> userNoExist(): Responses<T> {
-            return fail(ResponseCodes.userNoExist, "用户不存在")
+            return fail(ResponseCodes.userNoExists, "用户不存在")
         }
 
         /**

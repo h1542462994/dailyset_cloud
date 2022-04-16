@@ -12,7 +12,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
+import org.tty.dailyset.dailyset_cloud.auth.Anonymous
 import org.tty.dailyset.dailyset_cloud.bean.Responses
+import org.tty.dailyset.dailyset_cloud.bean.UserState
+import org.tty.dailyset.dailyset_cloud.bean.castToUserStateResp
 import org.tty.dailyset.dailyset_cloud.bean.req.UserLoginReq
 import org.tty.dailyset.dailyset_cloud.bean.req.UserRegisterReq
 import org.tty.dailyset.dailyset_cloud.bean.resp.UserLoginResp
@@ -35,6 +38,7 @@ class UserController {
     @Autowired
     private lateinit var intentFactory: IntentFactory
 
+    @Anonymous
     @PostMapping("/user/register")
     fun register(userRegisterReq: UserRegisterReq): Responses<UserRegisterResp> {
         if (!userRegisterReq.verify()) {
@@ -46,6 +50,7 @@ class UserController {
         return userService.register(intent)
     }
 
+    @Anonymous
     @PostMapping("/user/login")
     fun login(userLoginReq: UserLoginReq): Responses<UserLoginResp> {
         if (!userLoginReq.verify()) {
@@ -58,11 +63,8 @@ class UserController {
     }
 
     @PostMapping("/user/state")
-    fun state(@RequestHeader("Authorization") authorization: String): Responses<UserStateResp> {
-        val token = getToken(authorization) ?: return Responses.tokenError()
-        val intent = intentFactory.createUserStateIntent(token)
-
-        return userService.state(intent)
+    fun state(userState: UserState?): Responses<UserStateResp> {
+        return Responses.ok(data = userState.castToUserStateResp())
     }
 
 }
