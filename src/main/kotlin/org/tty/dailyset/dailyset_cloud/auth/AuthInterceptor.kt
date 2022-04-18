@@ -1,3 +1,8 @@
+/**
+ * create at 2022/4/17
+ * @author h1542462994
+ */
+
 package org.tty.dailyset.dailyset_cloud.auth
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,6 +17,9 @@ import org.tty.dailyset.dailyset_cloud.util.getToken
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+/**
+ * auth interceptor
+ */
 @Component
 class AuthInterceptor: HandlerInterceptor {
 

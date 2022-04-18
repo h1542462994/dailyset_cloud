@@ -1,3 +1,8 @@
+/**
+ * create at 2022/4/16
+ * @author h1542462994
+ */
+
 @file:Suppress("OPT_IN_IS_NOT_ENABLED")
 
 package org.tty.dailyset.dailyset_cloud.bean

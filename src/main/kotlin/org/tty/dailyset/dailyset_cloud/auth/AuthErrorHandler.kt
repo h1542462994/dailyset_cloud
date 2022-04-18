@@ -1,3 +1,8 @@
+/**
+ * create at 2022/4/17
+ * @author h1542462994
+ */
+
 package org.tty.dailyset.dailyset_cloud.auth
 
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -9,6 +14,9 @@ import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.tokenError
 import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.userNoExists
 import org.tty.dailyset.dailyset_cloud.bean.Responses
 
+/**
+ * global exception handler for [AuthError]
+ */
 @ControllerAdvice
 class AuthErrorHandler {
     @ExceptionHandler(AuthError::class)

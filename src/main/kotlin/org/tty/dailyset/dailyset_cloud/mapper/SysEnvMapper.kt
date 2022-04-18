@@ -19,8 +19,10 @@ import org.tty.dailyset.dailyset_cloud.bean.entity.SysEnv
 @Mapper
 interface SysEnvMapper {
     @Select("select * from sys_env limit 1")
-    fun get(): SysEnv
+    fun find(): SysEnv
 
     @Update("update sys_env set next_uid_generate = #{uid}")
-    fun setUid(uid: Int): Int
+    fun updateNextUidGenerate(uid: Int): Int
+
+
 }

@@ -1,6 +1,8 @@
 /**
  * create at 2022/4/16
  * @author h1542462994
+ *
+ * parameter resolver
  */
 
 package org.tty.dailyset.dailyset_cloud.auth
@@ -18,7 +20,9 @@ import org.tty.dailyset.dailyset_cloud.component.IntentFactory
 import org.tty.dailyset.dailyset_cloud.service.UserService
 import org.tty.dailyset.dailyset_cloud.util.getToken
 
-
+/**
+ * parameter resolver for [UserState]
+ */
 @Component
 class UserStateParameterResolver: HandlerMethodArgumentResolver {
 

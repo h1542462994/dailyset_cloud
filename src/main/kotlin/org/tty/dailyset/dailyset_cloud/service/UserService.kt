@@ -54,13 +54,13 @@ class UserService {
      * register user
      */
     fun register(intent: UserRegisterIntent): Responses<UserRegisterResp> {
-        val sysEnv = sysEnvMapper.get()
+        val sysEnv = sysEnvMapper.find()
         val nextUidGenerate = sysEnv.nextUidGenerate
         val encryptPassword = encryptProvider.encrypt(nextUidGenerate.toString(), intent.password)
 
         val result = userMapper.addUser(nextUidGenerate, intent.nickname, intent.email, encryptPassword, intent.portraitId)
         return if (result >= 0) {
-            sysEnvMapper.setUid(nextUidGenerate + 1)
+            sysEnvMapper.updateNextUidGenerate(nextUidGenerate + 1)
             Responses.ok(message = "注册成功", data = UserRegisterResp(nextUidGenerate, intent.nickname, intent.email, intent.portraitId))
         } else {
             Responses.fail()
@@ -73,7 +73,7 @@ class UserService {
     fun login(intent: UserLoginIntent): Responses<UserLoginResp> {
 
         // first check whether the user exists.
-        val user = userMapper.getUser(intent.uid)
+        val user = userMapper.findUserByUid(intent.uid)
             ?: return Responses.userNoExist()
 
         if (environmentVars.profile.isDev() && user.uid == environmentVars.beginUid) {
@@ -103,7 +103,7 @@ class UserService {
          * if not exists, create a new userActivity.
          */
         if (!needCreate) {
-            val userActivity: UserActivity? = userActivityMapper.getByUidAndDeviceCode(intent.uid, deviceCode)
+            val userActivity: UserActivity? = userActivityMapper.findByUidAndDeviceCode(intent.uid, deviceCode)
             if (userActivity == null) {
                 needCreate = true
             }
@@ -157,11 +157,11 @@ class UserService {
             ?: return Responses.tokenError()
 
         // get the user
-        val user = userMapper.getUser(token.uid)
+        val user = userMapper.findUserByUid(token.uid)
             ?: return Responses.userNoExist()
 
         // get the userActivity
-        val userActivity = userActivityMapper.getByUidAndDeviceCode(token.uid, token.deviceCode)
+        val userActivity = userActivityMapper.findByUidAndDeviceCode(token.uid, token.deviceCode)
             ?: return Responses.deviceCodeError()
 
         val userStateResp = UserStateResp(
@@ -185,10 +185,10 @@ class UserService {
             ?: return null
 
         // get the user
-        val user = userMapper.getUser(token.uid) ?: return UserState(null, null)
+        val user = userMapper.findUserByUid(token.uid) ?: return UserState(null, null)
 
         // get the userActivity
-        val userActivity = userActivityMapper.getByUidAndDeviceCode(token.uid, token.deviceCode)
+        val userActivity = userActivityMapper.findByUidAndDeviceCode(token.uid, token.deviceCode)
 
         return UserState(user, userActivity)
     }
