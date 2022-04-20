@@ -12,7 +12,15 @@ version = "1.0.0"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
+    mavenLocal()
+    maven("https://maven.aliyun.com/repository/public")
+    maven("https://maven.aliyun.com/repository/spring")
     mavenCentral()
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor(0, TimeUnit.SECONDS)
+    resolutionStrategy.cacheDynamicVersionsFor(0, TimeUnit.SECONDS)
 }
 
 dependencies {
@@ -33,6 +41,13 @@ dependencies {
 
     runtimeOnly("mysql:mysql-connector-java")
 }
+
+repositories {
+    mavenCentral()
+}
+
+
+
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {

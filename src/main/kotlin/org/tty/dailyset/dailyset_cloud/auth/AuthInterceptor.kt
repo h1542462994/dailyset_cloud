@@ -30,8 +30,6 @@ class AuthInterceptor: HandlerInterceptor {
     private lateinit var intentFactory: IntentFactory
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-
-
         /**
          * if the handler is not a function, skip.
          */

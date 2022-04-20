@@ -27,7 +27,9 @@ class MvcConfig: WebMvcConfigurer{
     }
 
     override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(authInterceptor).addPathPatterns("/**").order(-1)
+        registry.addInterceptor(authInterceptor)
+            .addPathPatterns("/me")
+            .addPathPatterns("/user/**").order(-1)
     }
 
 

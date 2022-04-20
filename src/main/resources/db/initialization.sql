@@ -10,9 +10,13 @@
 # init `user`
 USE `dailyset_cloud`;
 
+TRUNCATE `user`;
 INSERT INTO `user` VALUES (100001, '小新', 't1542462994@outlook.com', 'test@password', '(empty)');
 
 # init `sys_env`
 
-TRUNCATE `sys_env`;
-INSERT INTO `sys_env` VALUES (100002);
+# TRUNCATE `sys_env`;
+# INSERT INTO `sys_env` VALUES (100002);
+
+# init `preference`
+TRUNCATE `preference`;

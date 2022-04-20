@@ -16,6 +16,7 @@ import org.tty.dailyset.dailyset_cloud.bean.entity.SysEnv
  * mapper class -> entity [SysEnv]
  * @see SysEnv
  */
+@Deprecated("use PreferenceMapper instead.")
 @Mapper
 interface SysEnvMapper {
     @Select("select * from sys_env limit 1")

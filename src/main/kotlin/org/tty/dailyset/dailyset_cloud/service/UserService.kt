@@ -22,6 +22,7 @@ import org.tty.dailyset.dailyset_cloud.component.JwtToken
 import org.tty.dailyset.dailyset_cloud.intent.UserLoginIntent
 import org.tty.dailyset.dailyset_cloud.intent.UserRegisterIntent
 import org.tty.dailyset.dailyset_cloud.intent.UserStateIntent
+import org.tty.dailyset.dailyset_cloud.mapper.PreferenceMapper
 import org.tty.dailyset.dailyset_cloud.mapper.SysEnvMapper
 import org.tty.dailyset.dailyset_cloud.mapper.UserActivityMapper
 import org.tty.dailyset.dailyset_cloud.mapper.UserMapper
@@ -31,8 +32,11 @@ import java.time.LocalDateTime
 @Service
 class UserService {
 
+//    @Autowired
+//    private lateinit var sysEnvMapper: SysEnvMapper\
+
     @Autowired
-    private lateinit var sysEnvMapper: SysEnvMapper
+    private lateinit var preferenceService: PreferenceService
 
     @Autowired
     private lateinit var userMapper: UserMapper
@@ -54,13 +58,12 @@ class UserService {
      * register user
      */
     fun register(intent: UserRegisterIntent): Responses<UserRegisterResp> {
-        val sysEnv = sysEnvMapper.find()
-        val nextUidGenerate = sysEnv.nextUidGenerate
+        val nextUidGenerate = preferenceService.nextUidGenerate
         val encryptPassword = encryptProvider.encrypt(nextUidGenerate.toString(), intent.password)
 
         val result = userMapper.addUser(nextUidGenerate, intent.nickname, intent.email, encryptPassword, intent.portraitId)
         return if (result >= 0) {
-            sysEnvMapper.updateNextUidGenerate(nextUidGenerate + 1)
+            preferenceService.nextUidGenerate = nextUidGenerate + 1
             Responses.ok(message = "注册成功", data = UserRegisterResp(nextUidGenerate, intent.nickname, intent.email, intent.portraitId))
         } else {
             Responses.fail()

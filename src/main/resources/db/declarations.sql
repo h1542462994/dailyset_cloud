@@ -1,8 +1,8 @@
 # create at 2022/4/14
 # author: h1542462994
 
-# dialet: mysql
-# database-name:dailyset_cloud
+# dialect: mysql
+# database-name: dailyset_cloud
 # configuration localhost:3306 -u root -p dbpassword
 
 # file: declarations.sql
@@ -24,8 +24,16 @@ CREATE TABLE IF NOT EXISTS `user` (
 );
 
 # create table `sys_env` dsl
-CREATE TABLE IF NOT EXISTS `sys_env` (
-    `next_uid_generate` INTEGER NOT NULL UNIQUE # 最后分配的用户uid
+# CREATE TABLE IF NOT EXISTS `sys_env` (
+#     `next_uid_generate` INTEGER NOT NULL UNIQUE # 最后分配的用户uid
+# );
+
+# create table `preference` dsl
+CREATE TABLE IF NOT EXISTS `preference`(
+    `preference_name` VARCHAR(64) Unique NOT NULL,
+    `use_default` BOOLEAN NOT NULL DEFAULT TRUE,
+    `value` VARCHAR(256) NOT NULL,
+    PRIMARY KEY (`preference_name`)
 );
 
 # create table `user_activity` dsl
