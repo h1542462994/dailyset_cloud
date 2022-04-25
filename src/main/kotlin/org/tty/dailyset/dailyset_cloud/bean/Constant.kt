@@ -9,7 +9,5 @@ import org.tty.dailyset.dailyset_cloud.bean.enums.PreferenceName
 
 object Constant {
     const val BEARER = "Bearer "
-    val PREFERENCE_DEFAULTS = mapOf(
-         PreferenceName.NEXT_UID_GENERATE to "100001"
-    )
+
 }

@@ -4,7 +4,6 @@ package org.tty.dailyset.dailyset_cloud.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.tty.dailyset.dailyset_cloud.bean.Constant
 import org.tty.dailyset.dailyset_cloud.bean.enums.PreferenceName
 import org.tty.dailyset.dailyset_cloud.mapper.PreferenceMapper
 
@@ -15,7 +14,7 @@ class PreferenceService {
     private lateinit var preferenceMapper: PreferenceMapper
 
     private fun getValueOrDefault(preferenceName: PreferenceName): String {
-        val default = Constant.PREFERENCE_DEFAULTS[preferenceName]
+        val default = preferenceName.defaultValue
         val preference = preferenceMapper.getPreference(preferenceName.value)
         val useDefault = preference == null || preference.useDefault
         return checkNotNull(if (useDefault) default else preference?.value)
