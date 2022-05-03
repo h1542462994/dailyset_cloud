@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS `user` (
     `nickname` VARCHAR(64) NOT NULL DEFAULT 'no_assigned', # 用户昵称，可随时更改
     `email` VARCHAR(256) NULL, # 邮箱，将会用于后续的用户验证
     `password` VARCHAR(256) NOT NULL, # 密码
-    `portrait_id` VARCHAR(256) DEFAULT '(empty)' # 头像，默认空
+    `portrait_id` VARCHAR(256) DEFAULT '(empty)', # 头像，默认空
+    PRIMARY KEY (uid)
 );
 
 # create table `sys_env` dsl
@@ -30,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 # create table `preference` dsl
 CREATE TABLE IF NOT EXISTS `preference`(
-    `preference_name` VARCHAR(64) Unique NOT NULL,
+    `preference_name` VARCHAR(64) UNIQUE NOT NULL,
     `use_default` BOOLEAN NOT NULL DEFAULT TRUE,
     `value` VARCHAR(256) NOT NULL,
     PRIMARY KEY (`preference_name`)
@@ -44,6 +45,11 @@ CREATE TABLE IF NOT EXISTS `user_activity` (
     `platform_code` INTEGER DEFAULT 0,
     `state` INTEGER DEFAULT 0,
     `last_active` DATETIME NOT NULL
-)
+);
 
-
+# create table `user_ticket_bind` dsl
+CREATE TABLE IF NOT EXISTS `user_ticket_bind` (
+    `uid` INTEGER NOT NULL UNIQUE, # 用户标识，唯一，从100001递增
+    `ticket_id` VARCHAR(256) NOT NULL,
+    PRIMARY KEY (uid)
+);

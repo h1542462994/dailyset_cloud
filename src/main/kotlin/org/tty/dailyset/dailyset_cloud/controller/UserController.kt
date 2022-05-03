@@ -10,6 +10,7 @@ package org.tty.dailyset.dailyset_cloud.controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
 import org.tty.dailyset.dailyset_cloud.auth.Anonymous
@@ -40,7 +41,7 @@ class UserController {
 
     @Anonymous
     @PostMapping("/user/register")
-    fun register(userRegisterReq: UserRegisterReq): Responses<UserRegisterResp> {
+    fun register(@RequestBody userRegisterReq: UserRegisterReq): Responses<UserRegisterResp> {
         if (!userRegisterReq.verify()) {
             return Responses.argError()
         }
@@ -52,7 +53,7 @@ class UserController {
 
     @Anonymous
     @PostMapping("/user/login")
-    fun login(userLoginReq: UserLoginReq): Responses<UserLoginResp> {
+    fun login(@RequestBody userLoginReq: UserLoginReq): Responses<UserLoginResp> {
         if (!userLoginReq.verify()) {
             return Responses.argError()
         }
