@@ -17,6 +17,7 @@ import org.tty.dailyset.dailyset_cloud.auth.Anonymous
 import org.tty.dailyset.dailyset_cloud.bean.Responses
 import org.tty.dailyset.dailyset_cloud.bean.UserState
 import org.tty.dailyset.dailyset_cloud.bean.castToUserStateResp
+import org.tty.dailyset.dailyset_cloud.bean.req.UserAutoLoginReq
 import org.tty.dailyset.dailyset_cloud.bean.req.UserLoginReq
 import org.tty.dailyset.dailyset_cloud.bean.req.UserRegisterReq
 import org.tty.dailyset.dailyset_cloud.bean.resp.UserLoginResp
@@ -63,9 +64,21 @@ class UserController {
         return userService.login(intent)
     }
 
+    @Anonymous
+    @PostMapping("/user/autoLogin")
+    fun autoLogin(@RequestBody userAutoLoginReq: UserAutoLoginReq): Responses<UserStateResp> {
+        if (!userAutoLoginReq.verify()) {
+            return Responses.argError()
+        }
+
+        val intent = intentFactory.createUserAutoLoginIntent(userAutoLoginReq)
+        return userService.autoLogin(intent)
+    }
+
     @PostMapping("/user/state")
     fun state(userState: UserState?): Responses<UserStateResp> {
         return Responses.ok(data = userState.castToUserStateResp())
     }
+
 
 }

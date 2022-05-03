@@ -11,9 +11,9 @@ import java.io.File
 
 @Component
 class GrpcClientCreator {
-    @Value("\${dailyset.env.grpc.unic.port")
+    @Value("\${dailyset.env.grpc.unic.port}")
     private var grpcPort: Int = 0
-    @Value("\${dailyset.env.grpc.unic.address")
+    @Value("\${dailyset.env.grpc.unic.address}")
     private lateinit var grpcAddress: String
     @Value("\${grpc.server.security.enabled}")
     private var grpcSecurityEnabled = false

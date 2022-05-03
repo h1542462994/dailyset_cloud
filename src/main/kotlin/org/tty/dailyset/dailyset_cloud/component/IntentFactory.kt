@@ -10,8 +10,10 @@ package org.tty.dailyset.dailyset_cloud.component
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.tty.dailyset.dailyset_cloud.bean.enums.PlatformCode
+import org.tty.dailyset.dailyset_cloud.bean.req.UserAutoLoginReq
 import org.tty.dailyset.dailyset_cloud.bean.req.UserLoginReq
 import org.tty.dailyset.dailyset_cloud.bean.req.UserRegisterReq
+import org.tty.dailyset.dailyset_cloud.intent.UserAutoLoginIntent
 import org.tty.dailyset.dailyset_cloud.intent.UserLoginIntent
 import org.tty.dailyset.dailyset_cloud.intent.UserRegisterIntent
 import org.tty.dailyset.dailyset_cloud.intent.UserStateIntent
@@ -55,6 +57,10 @@ class IntentFactory {
      */
     fun createUserStateIntent(token: String): UserStateIntent {
         return UserStateIntent(token)
+    }
+
+    fun createUserAutoLoginIntent(userAutoLoginReq: UserAutoLoginReq): UserAutoLoginIntent {
+        return UserAutoLoginIntent(userAutoLoginReq.token!!)
     }
 
 }

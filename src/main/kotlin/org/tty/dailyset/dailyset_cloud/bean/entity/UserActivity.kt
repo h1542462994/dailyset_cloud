@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 /**
  * entity class -> table user_activity
  */
-class UserActivity(
+data class UserActivity(
     val uid: Int,
     val deviceCode: String,
     val deviceName: String,

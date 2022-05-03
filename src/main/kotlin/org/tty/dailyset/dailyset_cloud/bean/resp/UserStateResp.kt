@@ -16,5 +16,6 @@ class UserStateResp(
     val deviceName: String,
     val platformCode: Int,
     val state: Int,
-    val lastActive: LocalDateTime
+    val lastActive: LocalDateTime,
+    val token: String
 )

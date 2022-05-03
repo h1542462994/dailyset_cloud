@@ -15,7 +15,8 @@ import kotlin.contracts.contract
 
 data class UserState(
     val user: User?,
-    val userActivity: UserActivity?
+    val userActivity: UserActivity?,
+    val token: String?,
 )
 
 @OptIn(ExperimentalContracts::class)
@@ -40,6 +41,7 @@ fun UserState?.castToUserStateResp(): UserStateResp {
         deviceName = userActivity.deviceName,
         platformCode = userActivity.platformCode,
         state = userActivity.state,
-        lastActive = userActivity.lastActive
+        lastActive = userActivity.lastActive,
+        token = this.token!!
     )
 }

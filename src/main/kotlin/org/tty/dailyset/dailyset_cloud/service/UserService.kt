@@ -18,7 +18,9 @@ import org.tty.dailyset.dailyset_cloud.bean.resp.UserRegisterResp
 import org.tty.dailyset.dailyset_cloud.bean.resp.UserStateResp
 import org.tty.dailyset.dailyset_cloud.component.EncryptProvider
 import org.tty.dailyset.dailyset_cloud.component.EnvironmentVars
+import org.tty.dailyset.dailyset_cloud.component.IntentFactory
 import org.tty.dailyset.dailyset_cloud.component.JwtToken
+import org.tty.dailyset.dailyset_cloud.intent.UserAutoLoginIntent
 import org.tty.dailyset.dailyset_cloud.intent.UserLoginIntent
 import org.tty.dailyset.dailyset_cloud.intent.UserRegisterIntent
 import org.tty.dailyset.dailyset_cloud.intent.UserStateIntent
@@ -128,9 +130,9 @@ class UserService {
          * create a new userActivity if needed. else update the userActivity.
          */
         val resultCode: Int = if (!needCreate) {
-            userActivityMapper.updateByUidAndDeviceCode(userActivity.uid, userActivity.deviceCode, userActivity.deviceName, userActivity.platformCode, userActivity.state, userActivity.lastActive)
+            userActivityMapper.updateByUidAndDeviceCode(userActivity)
         } else {
-            userActivityMapper.addUserActivity(userActivity.uid, userActivity.deviceCode, userActivity.deviceName, userActivity.platformCode, userActivity.state, userActivity.lastActive)
+            userActivityMapper.addUserActivity(userActivity)
         }
 
         return if (resultCode >= 0) {
@@ -148,6 +150,44 @@ class UserService {
                 ))
         } else {
              Responses.fail()
+        }
+    }
+
+    fun autoLogin(intent: UserAutoLoginIntent): Responses<UserStateResp> {
+        // verify the token
+        val token = jwtToken.verify(intent.token)
+            ?: return Responses.tokenError()
+
+        // get the user
+        val user = userMapper.findUserByUid(token.uid)
+            ?: return Responses.userNoExist()
+
+        // get the userActivity
+        val userActivity = userActivityMapper.findByUidAndDeviceCode(token.uid, token.deviceCode)
+            ?: return Responses.deviceCodeError()
+
+        val newToken = jwtToken.sign(user, userActivity)
+        val newUserActivity = userActivity.copy(
+            state = PlatformState.ALIVE.state,
+            lastActive = LocalDateTime.now()
+        )
+
+        val resultCode: Int = userActivityMapper.updateByUidAndDeviceCode(newUserActivity)
+        if (resultCode > 0) {
+            return Responses.ok(message = "自动登录成功", data = UserStateResp(
+                uid = user.uid,
+                nickname = user.nickname,
+                email = user.email,
+                portraitId = user.portraitId,
+                deviceCode = newUserActivity.deviceCode,
+                deviceName = newUserActivity.deviceName,
+                platformCode = newUserActivity.platformCode,
+                token = newToken,
+                state = newUserActivity.state,
+                lastActive = newUserActivity.lastActive
+            ))
+        } else {
+            return Responses.fail()
         }
     }
 
@@ -176,7 +216,8 @@ class UserService {
             deviceName = userActivity.deviceName,
             platformCode = userActivity.platformCode,
             state = userActivity.state,
-            lastActive = userActivity.lastActive
+            lastActive = userActivity.lastActive,
+            token = userStateIntent.token
         )
 
         return Responses.ok(message = "获取用户状态成功", data = userStateResp)
@@ -188,12 +229,12 @@ class UserService {
             ?: return null
 
         // get the user
-        val user = userMapper.findUserByUid(token.uid) ?: return UserState(null, null)
+        val user = userMapper.findUserByUid(token.uid) ?: return UserState(null, null, null)
 
         // get the userActivity
         val userActivity = userActivityMapper.findByUidAndDeviceCode(token.uid, token.deviceCode)
 
-        return UserState(user, userActivity)
+        return UserState(user, userActivity, userStateIntent.token)
     }
 
 }
