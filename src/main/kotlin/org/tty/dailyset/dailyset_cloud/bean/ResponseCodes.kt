@@ -46,4 +46,9 @@ object ResponseCodes {
      */
     const val ticketExist = 10010
 
+    /**
+     * ticketNotExist
+     */
+    const val ticketNotExist = 10011
+
 }
