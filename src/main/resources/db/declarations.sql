@@ -15,12 +15,13 @@ CREATE DATABASE IF NOT EXISTS `dailyset_cloud`
 USE `dailyset_cloud`;
 
 # create table `user` dsl
-CREATE TABLE IF NOT EXISTS `user` (
-    `uid` INTEGER NOT NULL UNIQUE, # 用户标识，唯一，从100001递增
-    `nickname` VARCHAR(64) NOT NULL DEFAULT 'no_assigned', # 用户昵称，可随时更改
-    `email` VARCHAR(256) NULL, # 邮箱，将会用于后续的用户验证
-    `password` VARCHAR(256) NOT NULL, # 密码
-    `portrait_id` VARCHAR(256) DEFAULT '(empty)', # 头像，默认空
+CREATE TABLE IF NOT EXISTS `user`
+(
+    `uid`         INTEGER      NOT NULL UNIQUE,                # 用户标识，唯一，从100001递增
+    `nickname`    VARCHAR(64)  NOT NULL DEFAULT 'no_assigned', # 用户昵称，可随时更改
+    `email`       VARCHAR(256) NULL,                           # 邮箱，将会用于后续的用户验证
+    `password`    VARCHAR(256) NOT NULL,                       # 密码
+    `portrait_id` VARCHAR(256)          DEFAULT '(empty)',     # 头像，默认空
     PRIMARY KEY (uid)
 );
 
@@ -30,58 +31,158 @@ CREATE TABLE IF NOT EXISTS `user` (
 # );
 
 # create table `preference` dsl
-CREATE TABLE IF NOT EXISTS `preference`(
+CREATE TABLE IF NOT EXISTS `preference`
+(
     `preference_name` VARCHAR(64) UNIQUE NOT NULL,
-    `use_default` BOOLEAN NOT NULL DEFAULT TRUE,
-    `value` VARCHAR(256) NOT NULL,
+    `use_default`     BOOLEAN            NOT NULL DEFAULT TRUE,
+    `value`           VARCHAR(256)       NOT NULL,
     PRIMARY KEY (`preference_name`)
 );
 
 # create table `user_activity` dsl
-CREATE TABLE IF NOT EXISTS `user_activity` (
-    `uid` INTEGER NOT NULL, # 用户标识，唯一，从100001递增
-    `device_code` VARCHAR(256) NOT NULL,
-    `device_name` VARCHAR(256) NOT NULL,
+CREATE TABLE IF NOT EXISTS `user_activity`
+(
+    `uid`           INTEGER      NOT NULL, # 用户标识，唯一，从100001递增
+    `device_code`   VARCHAR(256) NOT NULL,
+    `device_name`   VARCHAR(256) NOT NULL,
     `platform_code` INTEGER DEFAULT 0,
-    `state` INTEGER DEFAULT 0,
-    `last_active` DATETIME NOT NULL
+    `state`         INTEGER DEFAULT 0,
+    `last_active`   DATETIME     NOT NULL
 );
 
 # create table `user_ticket_bind` dsl
-CREATE TABLE IF NOT EXISTS `user_ticket_bind` (
-    `uid` INTEGER NOT NULL UNIQUE, # 用户标识，唯一，从100001递增
+CREATE TABLE IF NOT EXISTS `user_ticket_bind`
+(
+    `uid`       INTEGER      NOT NULL UNIQUE, # 用户标识，唯一，从100001递增
     `ticket_id` VARCHAR(256) NOT NULL,
     PRIMARY KEY (uid)
 );
 
 # create table `dailyset` dsl
-CREATE TABLE IF NOT EXISTS `dailyset` (
-    `uid` VARCHAR(64) NOT NULL UNIQUE, # 唯一标识
-    `icon` VARCHAR(32) NOT NULL DEFAULT '', # 图标
-    `type` INTEGER NOT NULL, # 类型, normal = 0 | clazz = 1 | clazz_auto = 2 | task_specific = 3
-    `name` VARCHAR(64) NOT NULL,
-    `source_version` INTEGER NOT NULL, # 数据版本号
-    `matte_version` INTEGER NOT NULL, # 蒙版数据版本号
-    `meta_version` INTEGER NOT NULL # 元数据版本号
+CREATE TABLE IF NOT EXISTS `dailyset`
+(
+    `uid`            VARCHAR(64) NOT NULL UNIQUE, # 资源的id
+    `type`           INTEGER     NOT NULL,        # 资源类型 normal = 0, clazz = 1, clazz_auto* = 2, task = 3, global = 4
+    `source_version` INTEGER     NOT NULL,        # 资源版本
+    `matte_version`  INTEGER     NOT NULL,        # 蒙版资源版本
+    `meta_version`   INTEGER     NOT NULL,        # 元数据版本
+    PRIMARY KEY (uid)
 );
 
-# create table `dailyset_usages` dsl
-CREATE TABLE IF NOT EXISTS `dailyset_usages` (
-    `user_uid` INTEGER NOT NULL, # 用户uid
-    `dailyset_uid` VARCHAR(64) NOT NULL, # 日程uid
-    `auth_type` INTEGER NOT NULL # 授权类型, owner = 0 | edit = 2 | read = 3
+# create table `dailyset_meta_links` dsl
+CREATE TABLE IF NOT EXISTS `dailyset_meta_links`
+(
+    `dailyset_uid`   VARCHAR(64) NOT NULL, # 日程表的uid
+    `meta_type`      INTEGER     NOT NULL, # 元数据类型
+    `meta_uid`       VARCHAR(64) NOT NULL, # 元数据的uid
+    `insert_version` INTEGER     NOT NULL, # 插入版本
+    `update_version` INTEGER     NOT NULL, # 更新版本
+    `remove_version` INTEGER     NOT NULL, # 移除版本
+    `last_tick`      DATETIME DEFAULT '1970-1-1 0:00:00'
 );
 
-# create table `dailyset_source_item` dsl
-CREATE TABLE IF NOT EXISTS `dailyset_source_item` (
-    `uid` VARCHAR(64) NOT NULL,
-    `dailyset_uid` VARCHAR(64) NOT NULL,
-    `link_type` INTEGER NOT NULL, # 链接资源类型, course = 0 | duration = 1 | task = 2
-    `link_uid` VARCHAR(64) NOT NULL,
-    `insert_version` INTEGER NOT NULL, # 首次加入的版本
-    `remove_version` INTEGER NOT NULL, # 被移除的版本
-    `update_version` INTEGER NOT NULL # 更新的版本
-)
+# create table `dailyset_basic_meta` dsl, meta_type = 1, [single]
+CREATE TABLE IF NOT EXISTS `dailyset_basic_meta`
+(
+    `meta_uid` VARCHAR(64) NOT NULL, # 元数据的uid
+    `name`     VARCHAR(64) NOT NULL, # 名称
+    `icon`     VARCHAR(64) NOT NULL  # 图标
+);
 
+# create table `dailyset_usage_meta` dsl, meta_type = 2
+CREATE TABLE IF NOT EXISTS `dailyset_usage_meta`
+(
+    `meta_uid`     VARCHAR(64) NOT NULL UNIQUE, # 资源的id
+    `dailyset_uid` VARCHAR(64) NOT NULL,        # 资源的id
+    `user_uid`     INTEGER     NOT NULL,        # 用户的id
+    `auth_type`    INTEGER     NOT NULL,        # 授权类型
+    PRIMARY KEY (meta_uid)
+);
 
+# create table `dailyset_source_links` dsl
+CREATE TABLE IF NOT EXISTS `dailyset_source_links`
+(
+    `dailyset_uid`   VARCHAR(64) NOT NULL, # 日程表的uid
+    `source_type`    INTEGER     NOT NULL, # 资源类型
+    `source_uid`     VARCHAR(64) NOT NULL, # 资源的uid
+    `insert_version` INTEGER     NOT NULL, # 插入版本
+    `update_version` INTEGER     NOT NULL, # 更新版本
+    `remove_version` INTEGER     NOT NULL,  # 删除版本
+    `last_tick`      DATETIME DEFAULT '1970-1-1 0:00:00'
+);
+
+# create table `dailyset_table` dsl, source_type = 1
+CREATE TABLE IF NOT EXISTS `dailyset_table`
+(
+    `source_uid` VARCHAR(64) NOT NULL, # 资源的id
+    `name`       VARCHAR(64) NOT NULL, # 表名
+    PRIMARY KEY (source_uid)
+);
+
+# create table `dailyset_row` dsl, source_type = 2
+CREATE TABLE IF NOT EXISTS `dailyset_row`
+(
+    `source_uid`    VARCHAR(64) NOT NULL, # 资源的id
+    `table_uid`     VARCHAR(64) NOT NULL, # 表的id
+    `current_index` INTEGER     NOT NULL, # 当前索引
+    `weekdays`      VARCHAR(64) NOT NULL, # 星期
+    `counts`        VARCHAR(64) NOT NULL, # 结束
+    PRIMARY KEY (source_uid)
+);
+
+# create table `dailyset_cell` dsl, source_type = 3
+CREATE TABLE IF NOT EXISTS `dailyset_cell`
+(
+    `source_uid`    VARCHAR(64) NOT NULL, # 资源的id
+    `row_uid`       VARCHAR(64) NOT NULL, # 行的id
+    `current_index` INTEGER     NOT NULL, # 当前索引
+    `start_time`    TIME        NOT NULL, # 开始时间
+    `end_time`      TIME        NOT NULL, # 结束时间
+    `normal_type`   INTEGER     NOT NULL, # 普通类型
+    `serial_index`  INTEGER     NOT NULL, # 序列索引
+    PRIMARY KEY (source_uid)
+);
+
+# create table `dailyset_duration` dsl, source_type = 4
+CREATE TABLE IF NOT EXISTS `dailyset_duration`
+(
+    `source_uid`          VARCHAR(64) NOT NULL,   # 资源的id
+    `type`                INTEGER     NOT NULL,   # 类型
+    `start_date`          DATE        NOT NULL,   # 开始日期
+    `end_date`            DATE        NOT NULL,   # 结束日期
+    `name`                VARCHAR(64) NOT NULL,   # 名称
+    `tag`                 VARCHAR(64) DEFAULT '', # 标签
+    `binding_year`        INTEGER     DEFAULT -1, # 绑定年份
+    `binding_period_code` INTEGER     DEFAULT -1, # 绑定周期码
+    PRIMARY KEY (source_uid)
+);
+
+# create table `dailyset_course` dsl, source_type = 10
+CREATE TABLE IF NOT EXISTS `dailyset_course`
+(
+    `source_uid`    VARCHAR(64) NOT NULL, # 资源的id
+    `year`          INTEGER     NOT NULL, # 名称
+    `period_code`   INTEGER     NOT NULL, # 周期码
+    `name`          VARCHAR(64) NOT NULL, # 名称
+    `campus`        VARCHAR(64) NOT NULL, # 校区
+    `location`      VARCHAR(64) NOT NULL, # 地点
+    `teacher`       VARCHAR(64) NOT NULL, # 教师
+    `weeks`         VARCHAR(64) NOT NULL, # 周数
+    `week_day`      INTEGER     NOT NULL, # 周几
+    `section_start` INTEGER     NOT NULL, # 开始节数
+    `section_end`   INTEGER     NOT NULL, # 结束节数
+    PRIMARY KEY (source_uid)
+);
+
+# create table `dailyset_matte_links` dsl
+CREATE TABLE IF NOT EXISTS `dailyset_matte_links`
+(
+    `dailyset_uid`   VARCHAR(64) NOT NULL, # 日程表的uid
+    `matte_type`      INTEGER     NOT NULL, # 元数据类型
+    `matte_uid`       VARCHAR(64) NOT NULL, # 元数据的uid
+    `insert_version` INTEGER     NOT NULL, # 插入版本
+    `update_version` INTEGER     NOT NULL, # 更新版本
+    `remove_version` INTEGER     NOT NULL, # 移除版本
+    `last_tick`      DATETIME DEFAULT '1970-1-1 0:00:00'
+);
 

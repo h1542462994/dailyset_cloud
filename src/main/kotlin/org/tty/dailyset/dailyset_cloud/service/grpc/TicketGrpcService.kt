@@ -14,7 +14,6 @@ import org.tty.dailyset.dailyset_cloud.grpc.TicketProtoBuilders.CurrentBindInfoR
 import org.tty.dailyset.dailyset_cloud.grpc.TicketProtoBuilders.TicketBindResponse
 import org.tty.dailyset.dailyset_cloud.mapper.UserTicketBindMapper
 import org.tty.dailyset.dailyset_cloud.service.UserService
-import org.tty.dailyset.dailyset_unic.grpc.TicketProtoBuilders.TicketQueryRequest as CTicketBindRequest
 
 @GrpcService
 class TicketGrpcService: TicketServiceCoroutineGrpc.TicketServiceImplBase() {
