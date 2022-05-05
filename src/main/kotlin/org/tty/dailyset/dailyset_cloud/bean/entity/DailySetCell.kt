@@ -5,7 +5,7 @@ import java.time.LocalTime
 /**
  * **source-cell(3)**
  */
-data class DailyCell(
+data class DailySetCell(
     val sourceUid: String,
     val rowUid: String,
     val currentIndex: Int,

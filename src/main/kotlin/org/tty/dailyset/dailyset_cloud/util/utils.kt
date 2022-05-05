@@ -46,3 +46,9 @@ fun getToken(auth: String): String?{
         null
     }
 }
+
+fun <T> MutableList<T>.addNotNull(value: T?) {
+    if (value != null) {
+        add(value)
+    }
+}

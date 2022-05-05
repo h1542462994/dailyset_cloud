@@ -3,7 +3,7 @@ package org.tty.dailyset.dailyset_cloud.bean.entity
 /**
  * **source-row(2)**
  */
-data class DailyRow(
+data class DailySetRow(
     val sourceUid: String,
     val tableUid: String,
     val currentIndex: Int,
