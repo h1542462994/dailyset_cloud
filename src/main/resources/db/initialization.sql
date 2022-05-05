@@ -20,3 +20,4 @@ INSERT INTO `user` VALUES (100001, '小新', 't1542462994@outlook.com', 'test@pa
 
 # init `preference`
 TRUNCATE `preference`;
+INSERT INTO `preference` VALUES('next_uid_generate', false, '100002');

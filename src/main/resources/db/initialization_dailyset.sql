@@ -13,27 +13,6 @@ VALUES ('#school.zjut.0', '#school.zjut.global', 1001, 0);
 INSERT INTO `dailyset_meta_links` (dailyset_uid, meta_type, meta_uid, insert_version, update_version, remove_version)
 VALUES ('#school.zjut.global', 2, '#school.zjut.0', 1, 1, 0);
 
-INSERT INTO `dailyset_duration` (source_uid, type, start_date, end_date, name, tag, binding_year, binding_period_code)
-VALUES ('#school.zjut.2018-1', 1, '2018-9-1', '2018-12-31', '2018-2019上学期', '', 2018, 1);
-INSERT INTO `dailyset_duration` (source_uid, type, start_date, end_date, name, tag, binding_year, binding_period_code)
-VALUES ('#school.zjut.2018-2', 1, '2019-3-1', '2019-6-30', '2018-2019下学期', '', 2018, 7);
-INSERT INTO `dailyset_duration` (source_uid, type, start_date, end_date, name, tag, binding_year, binding_period_code)
-VALUES ('#school.zjut.2019-1', 1, '2019-9-1', '2019-12-31', '2019-2020上学期', '', 2019, 1);
-INSERT INTO `dailyset_duration` (source_uid, type, start_date, end_date, name, tag, binding_year, binding_period_code)
-VALUES ('#school.zjut.2019-2', 1, '2020-3-1', '2020-6-30', '2019-2020下学期', '', 2019, 7);
-INSERT INTO `dailyset_duration` (source_uid, type, start_date, end_date, name, tag, binding_year, binding_period_code)
-VALUES ('#school.zjut.2020-1', 1, '2020-9-1', '2020-12-31', '2020-2021上学期', '', 2020, 1);
-INSERT INTO `dailyset_duration` (source_uid, type, start_date, end_date, name, tag, binding_year, binding_period_code)
-VALUES ('#school.zjut.2020-2', 1, '2021-3-1', '2021-6-30', '2020-2021下学期', '', 2020, 7);
-INSERT INTO `dailyset_duration` (source_uid, type, start_date, end_date, name, tag, binding_year, binding_period_code)
-VALUES ('#school.zjut.2021-1', 1, '2021-9-1', '2021-12-31', '2021-2022上学期', '', 2021, 1);
-INSERT INTO `dailyset_duration` (source_uid, type, start_date, end_date, name, tag, binding_year, binding_period_code)
-VALUES ('#school.zjut.2021-2', 1, '2022-3-1', '2022-6-30', '2021-2022下学期', '', 2021, 7);
-INSERT INTO `dailyset_duration` (source_uid, type, start_date, end_date, name, tag, binding_year, binding_period_code)
-VALUES ('#school.zjut.2022-1', 1, '2022-9-1', '2022-12-21', '2022-2023上学期', '', 2022, 1);
-INSERT INTO `dailyset_duration` (source_uid, type, start_date, end_date, name, tag, binding_year, binding_period_code)
-VALUES ('#school.zjut.2022-2', 1, '2023-3-1', '2023-6-30', '2022-2023下学期', '', 2022, 7);
-
 INSERT INTO `dailyset_row` (source_uid, table_uid, current_index, weekdays, counts)
 VALUES ('#school.zjut.0', '#school.zjut.0', 0, '[1, 2, 3, 4, 5, 6, 7]', '[5, 4, 3]');
 
@@ -90,19 +69,3 @@ INSERT INTO `dailyset_source_links` (dailyset_uid, source_type, source_uid, inse
 VALUES ('#school.zjut.global', 3, '#school.zjut.10', 1, 1, 0);
 INSERT INTO `dailyset_source_links` (dailyset_uid, source_type, source_uid, insert_version, update_version, remove_version)
 VALUES ('#school.zjut.global', 3, '#school.zjut.11', 1, 1, 0);
-INSERT INTO `dailyset_source_links` (dailyset_uid, source_type, source_uid, insert_version, update_version, remove_version)
-VALUES ('#school.zjut.global', 4, '#school.zjut.2018-1', 1, 1, 0);
-INSERT INTO `dailyset_source_links` (dailyset_uid, source_type, source_uid, insert_version, update_version, remove_version)
-VALUES ('#school.zjut.global', 4, '#school.zjut.2018-2', 1, 1, 0);
-INSERT INTO `dailyset_source_links` (dailyset_uid, source_type, source_uid, insert_version, update_version, remove_version)
-VALUES ('#school.zjut.global', 4, '#school.zjut.2019-1', 1, 1, 0);
-INSERT INTO `dailyset_source_links` (dailyset_uid, source_type, source_uid, insert_version, update_version, remove_version)
-VALUES ('#school.zjut.global', 4, '#school.zjut.2019-2', 1, 1, 0);
-INSERT INTO `dailyset_source_links` (dailyset_uid, source_type, source_uid, insert_version, update_version, remove_version)
-VALUES ('#school.zjut.global', 4, '#school.zjut.2020-1', 1, 1, 0);
-INSERT INTO `dailyset_source_links` (dailyset_uid, source_type, source_uid, insert_version, update_version, remove_version)
-VALUES ('#school.zjut.global', 4, '#school.zjut.2020-2', 1, 1, 0);
-INSERT INTO `dailyset_source_links` (dailyset_uid, source_type, source_uid, insert_version, update_version, remove_version)
-VALUES ('#school.zjut.global', 4, '#school.zjut.2021-1', 1, 1, 0);
-INSERT INTO `dailyset_source_links` (dailyset_uid, source_type, source_uid, insert_version, update_version, remove_version)
-VALUES ('#school.zjut.global', 4, '#school.zjut.2022-2', 1, 1, 0);

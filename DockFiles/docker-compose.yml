@@ -13,7 +13,6 @@ services:
       MYSQL_ROOT_PASSWORD: SNWeofpheYpKtlNAzfhoqACQiFYkqJRl
       MYSQL_USER: dbuser
       MYSQL_PASSWORD: dbpassword
-      MYSQL_DATABASE: dailyset_cloud
     ports:
       - 3306:3306
   dailyset-cloud-server:
@@ -27,6 +26,7 @@ services:
       - dailyset-cloud-mysql
     ports:
       - 8086:8086
+      - 8087:8087
   dailyset-cloud-unic:
     container_name: dailyset_cloud_unic
     image: dailyset_cloud/unic
@@ -37,4 +37,5 @@ services:
     depends_on:
       - dailyset-cloud-mysql
     ports:
-      - 8087:8087
+      - 8088:8088
+      - 8089:8089

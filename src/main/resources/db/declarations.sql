@@ -173,6 +173,7 @@ CREATE TABLE IF NOT EXISTS `dailyset_course`
     `week_day`      INTEGER     NOT NULL, # 周几
     `section_start` INTEGER     NOT NULL, # 开始节数
     `section_end`   INTEGER     NOT NULL, # 结束节数
+    `digest`        VARCHAR(64) NOT NULL, # 摘要
     PRIMARY KEY (source_uid)
 );
 
