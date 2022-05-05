@@ -21,10 +21,10 @@ POST http://{{location}}/user/login
 Content-Type: application/json
 
 {
-    "uid": "100001",
-    "password": "test@password",
+    "uid": "100003",
+    "password": "12345678",
     "deviceCode": "3fffb736-ebc1-429e-8a54-f66670fd7064",
-    "deviceName": "cht",
+    "deviceName": "HttpUnitTest",
     "platformCode": "2"
 }
 
@@ -32,9 +32,27 @@ Content-Type: application/json
 
 ### user/state
 POST http://{{location}}/user/state
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 ### /me
 GET http://{{location}}/me
 Authorization: Bearer {{auth_token}}
+
+### /dailyset/info
+POST http://{{location}}/dailyset/info
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+### /dailyset/update
+POST http://{{location}}/dailyset/update
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "uid": "#school.zjut.global",
+    "type": 4,
+    "sourceVersion": 0,
+    "matteVersion": 0,
+    "metaVersion": 0
+}

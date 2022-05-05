@@ -78,7 +78,8 @@ CREATE TABLE IF NOT EXISTS `dailyset_meta_links`
     `insert_version` INTEGER     NOT NULL, # 插入版本
     `update_version` INTEGER     NOT NULL, # 更新版本
     `remove_version` INTEGER     NOT NULL, # 移除版本
-    `last_tick`      DATETIME DEFAULT '1970-1-1 0:00:00'
+    `last_tick`      DATETIME DEFAULT '1970-1-1 0:00:00',
+    INDEX `dailyset_source_links_index1`(`dailyset_uid`, `meta_type`)
 );
 
 # create table `dailyset_basic_meta` dsl, meta_type = 1, [single]
@@ -108,7 +109,8 @@ CREATE TABLE IF NOT EXISTS `dailyset_source_links`
     `insert_version` INTEGER     NOT NULL, # 插入版本
     `update_version` INTEGER     NOT NULL, # 更新版本
     `remove_version` INTEGER     NOT NULL,  # 删除版本
-    `last_tick`      DATETIME DEFAULT '1970-1-1 0:00:00'
+    `last_tick`      DATETIME DEFAULT '1970-1-1 0:00:00',
+    INDEX `dailyset_source_links_index1`(`dailyset_uid`, `source_type`)
 );
 
 # create table `dailyset_table` dsl, source_type = 1
@@ -183,6 +185,7 @@ CREATE TABLE IF NOT EXISTS `dailyset_matte_links`
     `insert_version` INTEGER     NOT NULL, # 插入版本
     `update_version` INTEGER     NOT NULL, # 更新版本
     `remove_version` INTEGER     NOT NULL, # 移除版本
-    `last_tick`      DATETIME DEFAULT '1970-1-1 0:00:00'
+    `last_tick`      DATETIME DEFAULT '1970-1-1 0:00:00',
+    INDEX `dailyset_matte_links_index1`(`dailyset_uid`, `matte_type`)
 );
 

@@ -71,6 +71,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
 //    implementation("org.springframework.boot:spring-boot-starter-security")
 
+    // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-reactor
+    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")

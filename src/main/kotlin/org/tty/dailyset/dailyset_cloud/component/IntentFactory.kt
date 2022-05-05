@@ -9,14 +9,13 @@ package org.tty.dailyset.dailyset_cloud.component
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.tty.dailyset.dailyset_cloud.bean.entity.DailySet
 import org.tty.dailyset.dailyset_cloud.bean.enums.PlatformCode
+import org.tty.dailyset.dailyset_cloud.bean.req.DailysetUpdateReq
 import org.tty.dailyset.dailyset_cloud.bean.req.UserAutoLoginReq
 import org.tty.dailyset.dailyset_cloud.bean.req.UserLoginReq
 import org.tty.dailyset.dailyset_cloud.bean.req.UserRegisterReq
-import org.tty.dailyset.dailyset_cloud.intent.UserAutoLoginIntent
-import org.tty.dailyset.dailyset_cloud.intent.UserLoginIntent
-import org.tty.dailyset.dailyset_cloud.intent.UserRegisterIntent
-import org.tty.dailyset.dailyset_cloud.intent.UserStateIntent
+import org.tty.dailyset.dailyset_cloud.intent.*
 
 /**
  * intentFactory
@@ -61,6 +60,19 @@ class IntentFactory {
 
     fun createUserAutoLoginIntent(userAutoLoginReq: UserAutoLoginReq): UserAutoLoginIntent {
         return UserAutoLoginIntent(userAutoLoginReq.token!!)
+    }
+
+    fun createDailySetUpdateIntent(userUid: Int, dailysetUpdateReq: DailysetUpdateReq): DailySetUpdateIntent {
+        return DailySetUpdateIntent(
+            userUid = userUid,
+            dailySet = DailySet(
+                uid = dailysetUpdateReq.uid!!,
+                type = dailysetUpdateReq.type!!,
+                sourceVersion = dailysetUpdateReq.sourceVersion!!,
+                matteVersion = dailysetUpdateReq.matteVersion!!,
+                metaVersion = dailysetUpdateReq.metaVersion!!,
+            )
+        )
     }
 
 }
