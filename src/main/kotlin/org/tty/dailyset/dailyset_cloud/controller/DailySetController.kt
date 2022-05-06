@@ -8,7 +8,7 @@ import org.tty.dailyset.dailyset_cloud.bean.DailySetUpdateResult
 import org.tty.dailyset.dailyset_cloud.bean.Responses
 import org.tty.dailyset.dailyset_cloud.bean.UserState
 import org.tty.dailyset.dailyset_cloud.bean.entity.DailySet
-import org.tty.dailyset.dailyset_cloud.bean.req.DailysetUpdateReq
+import org.tty.dailyset.dailyset_cloud.bean.req.DailySetUpdateReq
 import org.tty.dailyset.dailyset_cloud.component.IntentFactory
 import org.tty.dailyset.dailyset_cloud.service.DailySetService
 
@@ -30,7 +30,7 @@ class DailySetController {
     }
 
     @PostMapping("/dailyset/update")
-    suspend fun dailySetUpdate(userState: UserState?, @RequestBody dailysetUpdateReq: DailysetUpdateReq): Responses<DailySetUpdateResult> {
+    suspend fun dailySetUpdate(userState: UserState?, @RequestBody dailysetUpdateReq: DailySetUpdateReq): Responses<DailySetUpdateResult> {
         requireNotNull(userState)
         requireNotNull(userState.user)
 

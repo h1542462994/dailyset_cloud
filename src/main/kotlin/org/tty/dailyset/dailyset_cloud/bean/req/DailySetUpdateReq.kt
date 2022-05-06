@@ -3,7 +3,7 @@ package org.tty.dailyset.dailyset_cloud.bean.req
 import org.tty.dailyset.dailyset_cloud.util.anyIntEmpty
 import org.tty.dailyset.dailyset_cloud.util.anyTextEmpty
 
-class DailysetUpdateReq(
+class DailySetUpdateReq(
     val uid: String?,
     val type: Int?,
     val sourceVersion: Int?,

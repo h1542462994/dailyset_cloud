@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.tty.dailyset.dailyset_cloud.bean.entity.DailySet
 import org.tty.dailyset.dailyset_cloud.bean.enums.PlatformCode
-import org.tty.dailyset.dailyset_cloud.bean.req.DailysetUpdateReq
+import org.tty.dailyset.dailyset_cloud.bean.req.DailySetUpdateReq
 import org.tty.dailyset.dailyset_cloud.bean.req.UserAutoLoginReq
 import org.tty.dailyset.dailyset_cloud.bean.req.UserLoginReq
 import org.tty.dailyset.dailyset_cloud.bean.req.UserRegisterReq
@@ -62,7 +62,7 @@ class IntentFactory {
         return UserAutoLoginIntent(userAutoLoginReq.token!!)
     }
 
-    fun createDailySetUpdateIntent(userUid: Int, dailysetUpdateReq: DailysetUpdateReq): DailySetUpdateIntent {
+    fun createDailySetUpdateIntent(userUid: Int, dailysetUpdateReq: DailySetUpdateReq): DailySetUpdateIntent {
         return DailySetUpdateIntent(
             userUid = userUid,
             dailySet = DailySet(

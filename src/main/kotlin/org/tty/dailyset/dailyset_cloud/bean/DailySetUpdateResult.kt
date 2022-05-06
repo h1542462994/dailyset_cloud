@@ -5,6 +5,8 @@ import org.tty.dailyset.dailyset_cloud.bean.entity.DailySet
 data class DailySetUpdateResult(
     val dailySet: DailySet,
 
-    // 更新数据
+    /**
+     * updateItems
+     */
     val updateItems: List<DailySetUpdateItemCollection<*>>
 )
