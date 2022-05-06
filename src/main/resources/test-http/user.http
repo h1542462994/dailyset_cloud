@@ -21,7 +21,7 @@ POST http://{{location}}/user/login
 Content-Type: application/json
 
 {
-    "uid": "100003",
+    "uid": "100002",
     "password": "12345678",
     "deviceCode": "3fffb736-ebc1-429e-8a54-f66670fd7064",
     "deviceName": "HttpUnitTest",

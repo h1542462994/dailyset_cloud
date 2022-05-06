@@ -1,4 +1,4 @@
-package org.tty.dailyset.dailyset_cloud.component
+package org.tty.dailyset.dailyset_cloud.grpc.stub
 
 import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 import java.io.File
 
 @Component
-class GrpcClientCreator {
+class GrpcClientFactory {
     @Value("\${dailyset.env.grpc.unic.port}")
     private var grpcPort: Int = 0
     @Value("\${dailyset.env.grpc.unic.address}")

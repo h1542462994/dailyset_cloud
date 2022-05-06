@@ -5,9 +5,12 @@ import org.springframework.stereotype.Component
 import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes
 import org.tty.dailyset.dailyset_cloud.bean.Responses
 import org.tty.dailyset.dailyset_cloud.bean.entity.DailySet
-import org.tty.dailyset.dailyset_cloud.component.GrpcClientStubs
+import org.tty.dailyset.dailyset_cloud.grpc.stub.GrpcClientStubs
+import org.tty.dailyset.dailyset_cloud.http.req.DailySetInfosReqUnic
+import org.tty.dailyset.dailyset_cloud.http.DailySetUnicApi
 import org.tty.dailyset.dailyset_cloud.mapper.DailySetMapper
 import org.tty.dailyset.dailyset_cloud.mapper.UserTicketBindMapper
+import org.tty.dailyset.dailyset_cloud.util.addNotNull
 
 @Component
 class ZjutSchoolAdapter: SchoolAdapter {
@@ -23,7 +26,10 @@ class ZjutSchoolAdapter: SchoolAdapter {
     @Autowired
     private lateinit var dailySetMapper: DailySetMapper
 
-    override suspend fun getSchoolDailyset(userUid: Int): Responses<DailySet> {
+    @Autowired
+    private lateinit var dailySetUnicApi: DailySetUnicApi
+
+    override suspend fun getSchoolDailySets(userUid: Int): Responses<List<DailySet>> {
 
         // 首先确认ticket状态
         val userTicketBind = userTicketBindMapper.findUserTicketBindByUid(userUid)
@@ -38,15 +44,24 @@ class ZjutSchoolAdapter: SchoolAdapter {
             return Responses.fail(code = ticketResult.code, message = ticketResult.message)
         }
 
-        val dailySet = getDailySet()
-        return if (dailySet == null) {
-            Responses.fail(message = "数据库中无该数据")
-        } else {
-            Responses.ok(data = dailySet)
-        }
+        val dailySets = mutableListOf<DailySet>()
+        val globalDailySet = getDailySet()
+        dailySets.addNotNull(globalDailySet)
+        dailySets.addAll(getRemoteDailySets(userTicketBind.ticketId))
+
+        return Responses.ok(data = dailySets)
     }
 
     private fun getDailySet(): DailySet? {
         return dailySetMapper.findDailySetByUid(dailySetUid)
+    }
+
+    private suspend fun getRemoteDailySets(ticketId: String): List<DailySet> {
+        val response = dailySetUnicApi.dailySetInfos(DailySetInfosReqUnic(ticketId = ticketId))
+        return if (response.code == ResponseCodes.success) {
+            response.data!!
+        } else {
+            emptyList()
+        }
     }
 }

@@ -1,4 +1,4 @@
-package org.tty.dailyset.dailyset_cloud.service.grpc
+package org.tty.dailyset.dailyset_cloud.grpc
 
 import net.devh.boot.grpc.server.service.GrpcService
 import org.slf4j.LoggerFactory
@@ -7,10 +7,8 @@ import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes
 import org.tty.dailyset.dailyset_cloud.bean.converters.toCurrentBindInfoResponse
 import org.tty.dailyset.dailyset_cloud.bean.entity.UserTicketBind
 import org.tty.dailyset.dailyset_cloud.bean.isActive
-import org.tty.dailyset.dailyset_cloud.component.GrpcBeanFactory
-import org.tty.dailyset.dailyset_cloud.component.GrpcClientStubs
+import org.tty.dailyset.dailyset_cloud.grpc.stub.GrpcClientStubs
 import org.tty.dailyset.dailyset_cloud.component.IntentFactory
-import org.tty.dailyset.dailyset_cloud.grpc.*
 import org.tty.dailyset.dailyset_cloud.grpc.TicketProtoBuilders.CurrentBindInfoResponse
 import org.tty.dailyset.dailyset_cloud.grpc.TicketProtoBuilders.TicketBindResponse
 import org.tty.dailyset.dailyset_cloud.mapper.UserTicketBindMapper

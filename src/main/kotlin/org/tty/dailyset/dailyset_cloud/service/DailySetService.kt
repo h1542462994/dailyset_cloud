@@ -50,10 +50,10 @@ class DailySetService {
         val resultList = mutableListOf<DailySet>()
 
         // 获取自动课表
-        val resp = schoolAdapter.getSchoolDailyset(userUid)
+        val resp = schoolAdapter.getSchoolDailySets(userUid)
         if (resp.code == ResponseCodes.success) {
             requireNotNull(resp.data)
-            resultList.add(resp.data)
+            resultList.addAll(resp.data)
         }
 
         // 获取所有的使用元数据

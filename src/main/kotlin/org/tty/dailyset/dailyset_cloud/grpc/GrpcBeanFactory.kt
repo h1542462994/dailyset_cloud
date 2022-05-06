@@ -1,7 +1,6 @@
-package org.tty.dailyset.dailyset_cloud.component
+package org.tty.dailyset.dailyset_cloud.grpc
 
 import org.springframework.stereotype.Component
-import org.tty.dailyset.dailyset_cloud.grpc.TicketBindInfo
 import org.tty.dailyset.dailyset_cloud.grpc.TicketProtoBuilders.TicketBindInfo
 
 @Component
@@ -16,6 +15,5 @@ class GrpcBeanFactory {
             grade = 0
         }
     }
-
 
 }

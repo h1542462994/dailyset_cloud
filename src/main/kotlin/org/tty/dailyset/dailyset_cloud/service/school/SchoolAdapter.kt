@@ -7,5 +7,5 @@ interface SchoolAdapter {
     val dailySetUid: String
     val name: String
 
-    suspend fun getSchoolDailyset(userUid: Int): Responses<DailySet>
+    suspend fun getSchoolDailySets(userUid: Int): Responses<List<DailySet>>
 }

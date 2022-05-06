@@ -1,4 +1,4 @@
-package org.tty.dailyset.dailyset_cloud.service.grpc
+package org.tty.dailyset.dailyset_cloud.grpc
 
 import net.devh.boot.grpc.server.service.GrpcService
 import org.tty.dailyset.dailyset_cloud.grpc.HelloCoroutineGrpc

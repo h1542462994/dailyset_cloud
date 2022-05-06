@@ -66,19 +66,19 @@ configurations.all {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+//    implementation("com.github.lianjiatech:retrofit-spring-boot-starter:2.3.1")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
-//    implementation("org.springframework.boot:spring-boot-starter-security")
-
-    // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-reactor
     runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")
-
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
     implementation("io.grpc:grpc-netty:${grpcVersion}")
     implementation("com.google.protobuf:protobuf-java:${protobufVersion}")
@@ -93,10 +93,9 @@ dependencies {
 
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0")
     implementation("org.mybatis:mybatis:3.5.7")
+    runtimeOnly("mysql:mysql-connector-java")
 
     implementation("com.auth0:java-jwt:3.18.1")
-
-    runtimeOnly("mysql:mysql-connector-java")
 }
 
 

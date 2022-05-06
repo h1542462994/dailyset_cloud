@@ -5,17 +5,10 @@
 
 package org.tty.dailyset.dailyset_cloud.bean
 
-import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.argError
-import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.deviceCodeError
-import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.fail
-import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.passwordError
-import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.success
-import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.tokenError
-import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes.userNoExists
-
 /**
  * data class of response
  */
+@kotlinx.serialization.Serializable
 data class Responses<T>(
     val code: Int, // data
     val message: String, // message
