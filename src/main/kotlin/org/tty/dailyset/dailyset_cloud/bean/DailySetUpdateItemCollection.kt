@@ -1,7 +1,9 @@
 package org.tty.dailyset.dailyset_cloud.bean
 
+import kotlinx.serialization.Contextual
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetDataType
 
+@kotlinx.serialization.Serializable
 data class DailySetUpdateItemCollection<T: Any>(
     /**
      * **type** 数据类型 **source | matte | meta**
@@ -15,4 +17,5 @@ data class DailySetUpdateItemCollection<T: Any>(
     val subType: Int,
 
 
+    @Contextual
     val updates: List<DailySetUpdateItem<T>>)

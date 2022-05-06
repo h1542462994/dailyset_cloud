@@ -5,17 +5,19 @@ import org.springframework.stereotype.Component
 import org.tty.dailyset.dailyset_cloud.bean.DailySetUpdateItemCollection
 import org.tty.dailyset.dailyset_cloud.bean.DailySetUpdateResult
 import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes
+import org.tty.dailyset.dailyset_cloud.bean.converters.toDailysetUpdateResultNoTrans
 import org.tty.dailyset.dailyset_cloud.bean.entity.*
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetDataType
+import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetMetaType
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetSourceType
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetType
+import org.tty.dailyset.dailyset_cloud.http.DailySetUnicApi
+import org.tty.dailyset.dailyset_cloud.http.req.DailySetUpdateReqUnic
 import org.tty.dailyset.dailyset_cloud.intent.DailySetUpdateIntent
 import org.tty.dailyset.dailyset_cloud.mapper.DailySetMapper
 import org.tty.dailyset.dailyset_cloud.mapper.DailySetUsageMetaMapper
-import org.tty.dailyset.dailyset_cloud.service.resources.DailySetCellResourceAdapter
-import org.tty.dailyset.dailyset_cloud.service.resources.DailySetDurationResourceAdapter
-import org.tty.dailyset.dailyset_cloud.service.resources.DailySetRowResourceAdapter
-import org.tty.dailyset.dailyset_cloud.service.resources.DailySetTableResourceAdapter
+import org.tty.dailyset.dailyset_cloud.mapper.UserTicketBindMapper
+import org.tty.dailyset.dailyset_cloud.service.resources.*
 import org.tty.dailyset.dailyset_cloud.service.school.SchoolAdapter
 import org.tty.dailyset.dailyset_cloud.util.addNotNull
 
@@ -42,6 +44,15 @@ class DailySetService {
 
     @Autowired
     private lateinit var dailySetCellResourceAdapter: DailySetCellResourceAdapter
+
+    @Autowired
+    private lateinit var dailySetBasicMetaResourceAdapter: DailySetBasicMetaResourceAdapter
+
+    @Autowired
+    private lateinit var dailySetUnicApi: DailySetUnicApi
+
+    @Autowired
+    private lateinit var unicTicketBindMapper: UserTicketBindMapper
 
     /**
      * 获取所有Dailyset的数据.
@@ -72,8 +83,13 @@ class DailySetService {
      * 获取某个Dailyset的更新数据
      */
     suspend fun getUpdates(intent: DailySetUpdateIntent): DailySetUpdateResult? {
-        val dailySet = dailySetMapper.findDailySetByUid(intent.dailySet.uid) ?: return null
-        return if (dailySet.type == DailySetType.ClazzAuto.value) {
+        val autoDailySetUids = listOf(
+            "^#school.zjut.course.[\\dA-Za-z_-]+$".toRegex(),
+            "^#school.zjut.unic$".toRegex()
+        )
+        return if (autoDailySetUids.any {
+                it.matches(intent.dailySet.uid)
+            }) {
             getUpdatesOfAuto(intent)
         } else {
             getUpdatesOfLocal(intent)
@@ -85,7 +101,22 @@ class DailySetService {
      */
     private suspend fun getUpdatesOfAuto(intent: DailySetUpdateIntent): DailySetUpdateResult? {
         // 获取自动课表
-        TODO()
+        val unicTicketBind = unicTicketBindMapper.findUserTicketBindByUid(intent.userUid) ?: return null
+
+        // TODO: 迁移到ZjutSchoolAdapter.
+        val response = dailySetUnicApi.dailySetUpdate(DailySetUpdateReqUnic(
+            ticketId = unicTicketBind.ticketId,
+            uid = intent.dailySet.uid,
+            type = intent.dailySet.type,
+            sourceVersion = intent.dailySet.sourceVersion,
+            matteVersion = intent.dailySet.matteVersion,
+            metaVersion = intent.dailySet.metaVersion
+        ))
+        return if (response.code == ResponseCodes.success) {
+            response.data.toDailysetUpdateResultNoTrans()
+        } else {
+            null
+        }
     }
 
     private suspend fun getUpdatesOfLocal(intent: DailySetUpdateIntent): DailySetUpdateResult? {
@@ -98,6 +129,7 @@ class DailySetService {
         updateItems.addNotNull(withDailySetTableUpdates(intent))
         updateItems.addNotNull(withDailySetRowUpdates(intent))
         updateItems.addNotNull(withDailySetCellUpdates(intent))
+        updateItems.addNotNull(withDailySetBasicMetaUpdates(intent))
         //endregion
 
         return DailySetUpdateResult(
@@ -153,6 +185,19 @@ class DailySetService {
         )
         return if (dailySetCellUpdateItems.updates.isNotEmpty()) {
             dailySetCellUpdateItems
+        } else {
+            null
+        }
+    }
+
+    private suspend fun withDailySetBasicMetaUpdates(intent: DailySetUpdateIntent): DailySetUpdateItemCollection<DailySetBasicMeta>? {
+        val dailySetBasicMetaItems = DailySetUpdateItemCollection(
+            type = DailySetDataType.Meta.value,
+            subType = DailySetMetaType.BasicMeta.value,
+            updates = dailySetBasicMetaResourceAdapter.getUpdatedItems(intent.dailySet.uid, intent.dailySet.sourceVersion)
+        )
+        return if (dailySetBasicMetaItems.updates.isNotEmpty()) {
+            dailySetBasicMetaItems
         } else {
             null
         }

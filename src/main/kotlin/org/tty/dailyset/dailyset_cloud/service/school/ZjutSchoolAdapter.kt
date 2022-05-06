@@ -5,12 +5,20 @@ import org.springframework.stereotype.Component
 import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes
 import org.tty.dailyset.dailyset_cloud.bean.Responses
 import org.tty.dailyset.dailyset_cloud.bean.entity.DailySet
+import org.tty.dailyset.dailyset_cloud.bean.entity.DailySetBasicMeta
+import org.tty.dailyset.dailyset_cloud.bean.entity.DailySetMetaLinks
+import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetMetaType
+import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetType
 import org.tty.dailyset.dailyset_cloud.grpc.stub.GrpcClientStubs
 import org.tty.dailyset.dailyset_cloud.http.req.DailySetInfosReqUnic
 import org.tty.dailyset.dailyset_cloud.http.DailySetUnicApi
+import org.tty.dailyset.dailyset_cloud.mapper.DailySetBasicMetaMapper
 import org.tty.dailyset.dailyset_cloud.mapper.DailySetMapper
+import org.tty.dailyset.dailyset_cloud.mapper.DailySetMetaLinksMapper
 import org.tty.dailyset.dailyset_cloud.mapper.UserTicketBindMapper
 import org.tty.dailyset.dailyset_cloud.util.addNotNull
+import org.tty.dailyset.dailyset_cloud.util.uuid
+import java.time.LocalDateTime
 
 @Component
 class ZjutSchoolAdapter: SchoolAdapter {
@@ -28,6 +36,12 @@ class ZjutSchoolAdapter: SchoolAdapter {
 
     @Autowired
     private lateinit var dailySetUnicApi: DailySetUnicApi
+
+    @Autowired
+    private lateinit var dailySetBasicMetaMapper: DailySetBasicMetaMapper
+
+    @Autowired
+    private lateinit var dailySetMetaLinksMapper: DailySetMetaLinksMapper
 
     override suspend fun getSchoolDailySets(userUid: Int): Responses<List<DailySet>> {
 
@@ -47,7 +61,14 @@ class ZjutSchoolAdapter: SchoolAdapter {
         val dailySets = mutableListOf<DailySet>()
         val globalDailySet = getDailySet()
         dailySets.addNotNull(globalDailySet)
-        dailySets.addAll(getRemoteDailySets(userTicketBind.ticketId))
+        val resultList = getRemoteDailySets(userTicketBind.ticketId)
+        dailySets.addAll(resultList)
+        if (resultList.any {
+                "^#school.zjut.course.[\\dA-Za-z_-]+$".toRegex().matches(it.uid)
+            }) {
+            dailySets.add(ensureDailySetGCreated(ticketResult.ticket.uid))
+        }
+
 
         return Responses.ok(data = dailySets)
     }
@@ -56,12 +77,35 @@ class ZjutSchoolAdapter: SchoolAdapter {
         return dailySetMapper.findDailySetByUid(dailySetUid)
     }
 
+    /**
+     * 从远程服务器中获取信息
+     */
     private suspend fun getRemoteDailySets(ticketId: String): List<DailySet> {
         val response = dailySetUnicApi.dailySetInfos(DailySetInfosReqUnic(ticketId = ticketId))
         return if (response.code == ResponseCodes.success) {
             response.data!!
         } else {
             emptyList()
+        }
+    }
+
+    /**
+     * 确定生成初始化的类似 **#school.zjut.course.2018x.g**的日程表，用于存放自动课表的其他信息（例如基础信息，主题等等）
+     */
+    private fun ensureDailySetGCreated(studentUid: String): DailySet {
+        val dailySetGUid = "#school.zjut.course.${studentUid}.g"
+        val dailySet = dailySetMapper.findDailySetByUid(dailySetGUid)
+        return if (dailySet != null) {
+            dailySet
+        } else {
+            // 默认名称是自动课表，图标为空.
+            val dailySetNew = DailySet(dailySetGUid, DailySetType.Generated.value, 1, 1, 1)
+            val dailySetBasicMeta = DailySetBasicMeta(uuid(), "自动课表", "")
+            val dailySetMetaLinks = DailySetMetaLinks(dailySetGUid, DailySetMetaType.BasicMeta.value, dailySetBasicMeta.metaUid, 1, 0, 0, LocalDateTime.now())
+            dailySetMapper.addDailySet(dailySetNew)
+            dailySetBasicMetaMapper.addDailySetBasicMeta(dailySetBasicMeta)
+            dailySetMetaLinksMapper.addDailySetMetaLinks(dailySetMetaLinks)
+            dailySetNew
         }
     }
 }

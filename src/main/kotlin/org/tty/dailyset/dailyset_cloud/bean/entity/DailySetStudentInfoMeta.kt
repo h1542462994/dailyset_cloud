@@ -1,11 +1,10 @@
 package org.tty.dailyset.dailyset_cloud.bean.entity
 
-/**
- * **meta-basicMeta(1)**
- */
 @kotlinx.serialization.Serializable
-data class DailySetBasicMeta(
+data class DailySetStudentInfoMeta(
     val metaUid: String,
+    val departmentName: String,
+    val className: String,
     val name: String,
-    val icon: String
+    val grade: Int
 )

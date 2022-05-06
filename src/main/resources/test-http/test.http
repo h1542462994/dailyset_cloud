@@ -50,9 +50,35 @@ Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
-    "uid": "#school.zjut.global",
-    "type": 4,
-    "sourceVersion": 0,
-    "matteVersion": 0,
-    "metaVersion": 0
+  "uid": "#school.zjut.global",
+  "type": 4,
+  "sourceVersion": 0,
+  "matteVersion": 0,
+  "metaVersion": 0
+}
+
+### /dailyset/update <course>
+POST http://{{location}}/dailyset/update
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "uid": "#school.zjut.course.201806061201",
+  "type": 2,
+  "sourceVersion": 0,
+  "matteVersion": 0,
+  "metaVersion": 0
+}
+
+### /dailyset/update <unic>
+POST http://{{location}}/dailyset/update
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "uid": "#school.zjut.unic",
+  "type": 4,
+  "sourceVersion": 0,
+  "matteVersion": 0,
+  "metaVersion": 0
 }
