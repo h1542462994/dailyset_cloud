@@ -1,6 +1,7 @@
 package org.tty.dailyset.dailyset_cloud.service.grpc
 
 import net.devh.boot.grpc.server.service.GrpcService
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes
 import org.tty.dailyset.dailyset_cloud.bean.converters.toCurrentBindInfoResponse
@@ -32,6 +33,8 @@ class TicketGrpcService: TicketServiceCoroutineGrpc.TicketServiceImplBase() {
 
     @Autowired
     private lateinit var grpcBeanFactory: GrpcBeanFactory
+
+    private val logger = LoggerFactory.getLogger(TicketServiceGrpc::class.java)
 
     /**
      * 绑定ticket
