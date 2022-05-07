@@ -7,12 +7,10 @@ import org.tty.dailyset.dailyset_cloud.bean.DailySetUpdateResult
 import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes
 import org.tty.dailyset.dailyset_cloud.bean.Responses
 import org.tty.dailyset.dailyset_cloud.bean.converters.toDailySetUpdateResultTrans
-import org.tty.dailyset.dailyset_cloud.bean.converters.toDailysetUpdateResultNoTrans
 import org.tty.dailyset.dailyset_cloud.bean.entity.*
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetDataType
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetMetaType
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetSourceType
-import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetType
 import org.tty.dailyset.dailyset_cloud.http.DailySetUnicApi
 import org.tty.dailyset.dailyset_cloud.http.req.DailySetUpdateReqUnic
 import org.tty.dailyset.dailyset_cloud.intent.DailySetUpdateIntent
@@ -36,9 +34,6 @@ class DailySetService {
     private lateinit var dailySetUsageMetaMapper: DailySetUsageMetaMapper
 
     @Autowired
-    private lateinit var dailySetDurationResourceAdapter: DailySetDurationResourceAdapter
-
-    @Autowired
     private lateinit var dailySetTableResourceAdapter: DailySetTableResourceAdapter
 
     @Autowired
@@ -48,7 +43,16 @@ class DailySetService {
     private lateinit var dailySetCellResourceAdapter: DailySetCellResourceAdapter
 
     @Autowired
+    private lateinit var dailySetDurationResourceAdapter: DailySetDurationResourceAdapter
+
+    @Autowired
+    private lateinit var dailySetCourseResourceAdapter: DailySetCourseResourceAdapter
+
+    @Autowired
     private lateinit var dailySetBasicMetaResourceAdapter: DailySetBasicMetaResourceAdapter
+
+    @Autowired
+    private lateinit var dailySetUsageMetaResourceAdapter: DailySetUsageMetaResourceAdapter
 
     @Autowired
     private lateinit var dailySetUnicApi: DailySetUnicApi
@@ -70,7 +74,7 @@ class DailySetService {
         }
 
         // 获取所有的使用元数据
-        val dailySetUsageMetas = dailySetUsageMetaMapper.findAllDailySetUsageMetaByMetaUserUid(userUid)
+        val dailySetUsageMetas = dailySetUsageMetaMapper.findAllDailySetUsageMetaByUserUid(userUid)
         if (dailySetUsageMetas.isNotEmpty()) {
             val dailySets = dailySetMapper.findDailySetByUidBatch(
                 dailySetUsageMetas.map { it.dailySetUid }.distinct()
@@ -127,11 +131,13 @@ class DailySetService {
         val updateItems = mutableListOf<DailySetUpdateItemCollection<*>>()
 
         //region sources data update
-        updateItems.addNotNull(withDailySetDurationUpdates(intent))
         updateItems.addNotNull(withDailySetTableUpdates(intent))
         updateItems.addNotNull(withDailySetRowUpdates(intent))
         updateItems.addNotNull(withDailySetCellUpdates(intent))
+        updateItems.addNotNull(withDailySetDurationUpdates(intent))
+        updateItems.addNotNull(withDailySetCourseUpdates(intent))
         updateItems.addNotNull(withDailySetBasicMetaUpdates(intent))
+        updateItems.addNotNull(withDailySetUsageMetaUpdates(intent))
         //endregion
 
         return DailySetUpdateResult(
@@ -140,19 +146,8 @@ class DailySetService {
         )
     }
 
-    private suspend fun withDailySetDurationUpdates(intent: DailySetUpdateIntent): DailySetUpdateItemCollection<DailySetDuration>? {
-        val dailySetDurationUpdateItems = DailySetUpdateItemCollection(
-            type = DailySetDataType.Source.value,
-            subType = DailySetSourceType.Duration.value,
-            updates = dailySetDurationResourceAdapter.getUpdatedItems(intent.dailySet.uid, intent.dailySet.sourceVersion)
-        )
-        return if (dailySetDurationUpdateItems.updates.isNotEmpty()) {
-            dailySetDurationUpdateItems
-        } else {
-            null
-        }
-    }
 
+    //region withDailySet...Updates
     private suspend fun withDailySetTableUpdates(intent: DailySetUpdateIntent): DailySetUpdateItemCollection<DailySetTable>? {
         val dailySetTableUpdateItems = DailySetUpdateItemCollection(
             type = DailySetDataType.Source.value,
@@ -192,6 +187,32 @@ class DailySetService {
         }
     }
 
+    private suspend fun withDailySetDurationUpdates(intent: DailySetUpdateIntent): DailySetUpdateItemCollection<DailySetDuration>? {
+        val dailySetDurationUpdateItems = DailySetUpdateItemCollection(
+            type = DailySetDataType.Source.value,
+            subType = DailySetSourceType.Duration.value,
+            updates = dailySetDurationResourceAdapter.getUpdatedItems(intent.dailySet.uid, intent.dailySet.sourceVersion)
+        )
+        return if (dailySetDurationUpdateItems.updates.isNotEmpty()) {
+            dailySetDurationUpdateItems
+        } else {
+            null
+        }
+    }
+
+    private suspend fun withDailySetCourseUpdates(intent: DailySetUpdateIntent): DailySetUpdateItemCollection<DailySetCourse>? {
+        val dailySetCourseUpdateItems = DailySetUpdateItemCollection(
+            type = DailySetDataType.Source.value,
+            subType = DailySetSourceType.Course.value,
+            updates = dailySetCourseResourceAdapter.getUpdatedItems(intent.dailySet.uid, intent.dailySet.sourceVersion)
+        )
+        return if (dailySetCourseUpdateItems.updates.isNotEmpty()) {
+            dailySetCourseUpdateItems
+        } else {
+            null
+        }
+    }
+
     private suspend fun withDailySetBasicMetaUpdates(intent: DailySetUpdateIntent): DailySetUpdateItemCollection<DailySetBasicMeta>? {
         val dailySetBasicMetaItems = DailySetUpdateItemCollection(
             type = DailySetDataType.Meta.value,
@@ -205,4 +226,17 @@ class DailySetService {
         }
     }
 
+    private suspend fun withDailySetUsageMetaUpdates(intent: DailySetUpdateIntent): DailySetUpdateItemCollection<DailySetUsageMeta>? {
+        val dailySetUsageMetaItems = DailySetUpdateItemCollection(
+            type = DailySetDataType.Meta.value,
+            subType = DailySetMetaType.UsageMeta.value,
+            updates = dailySetUsageMetaResourceAdapter.getUpdatedItems(intent.dailySet.uid, intent.dailySet.sourceVersion)
+        )
+        return if (dailySetUsageMetaItems.updates.isNotEmpty()) {
+            dailySetUsageMetaItems
+        } else {
+            null
+        }
+    }
+    //endregion
 }
