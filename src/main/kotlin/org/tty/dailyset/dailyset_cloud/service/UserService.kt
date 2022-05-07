@@ -8,7 +8,10 @@
 package org.tty.dailyset.dailyset_cloud.service
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.util.MultiValueMap
 import org.tty.dailyset.dailyset_cloud.bean.Responses
 import org.tty.dailyset.dailyset_cloud.bean.UserState
 import org.tty.dailyset.dailyset_cloud.bean.entity.UserActivity
@@ -75,21 +78,21 @@ class UserService {
     /**
      * login user
      */
-    fun login(intent: UserLoginIntent): Responses<UserLoginResp> {
+    fun login(intent: UserLoginIntent): ResponseEntity<Responses<UserLoginResp>>   {
 
         // first check whether the user exists.
         val user = userMapper.findUserByUid(intent.uid)
-            ?: return Responses.userNoExist()
+            ?: return ResponseEntity.ok(Responses.userNoExist())
 
         if (environmentVars.profile.isDev() && user.uid == environmentVars.beginUid) {
             if (intent.password != user.password) {
-                return Responses.passwordError()
+                return ResponseEntity.ok(Responses.passwordError())
             }
         } else {
             // then check whether the password is correct.
             val encryptPassword = encryptProvider.encrypt(intent.uid.toString(), intent.password)
             if (encryptPassword != user.password) {
-                return Responses.passwordError()
+                return ResponseEntity.ok(Responses.passwordError())
             }
         }
 
@@ -138,7 +141,10 @@ class UserService {
         return if (resultCode >= 0) {
             val token = jwtToken.sign(user, userActivity)
 
-            return Responses.ok(message = "登录成功", data = UserLoginResp(
+            return ResponseEntity.status(HttpStatus.OK).header(
+                "Authorization", "Bearer $token"
+            ).body(
+                Responses.ok(message = "登录成功", data = UserLoginResp(
                     uid = intent.uid,
                     nickname = user.nickname,
                     email = user.email,
@@ -148,23 +154,24 @@ class UserService {
                     deviceName = userActivity.deviceName,
                     platformCode = userActivity.platformCode,
                 ))
+            )
         } else {
-             Responses.fail()
+            ResponseEntity.ok(Responses.fail())
         }
     }
 
-    fun autoLogin(intent: UserAutoLoginIntent): Responses<UserStateResp> {
+    fun autoLogin(intent: UserAutoLoginIntent): ResponseEntity<Responses<UserStateResp>> {
         // verify the token
         val token = jwtToken.verify(intent.token)
-            ?: return Responses.tokenError()
+            ?: return ResponseEntity.ok(Responses.tokenError())
 
         // get the user
         val user = userMapper.findUserByUid(token.uid)
-            ?: return Responses.userNoExist()
+            ?: return ResponseEntity.ok(Responses.userNoExist())
 
         // get the userActivity
         val userActivity = userActivityMapper.findByUidAndDeviceCode(token.uid, token.deviceCode)
-            ?: return Responses.deviceCodeError()
+            ?: return ResponseEntity.ok(Responses.deviceCodeError())
 
         val newToken = jwtToken.sign(user, userActivity)
         val newUserActivity = userActivity.copy(
@@ -174,20 +181,22 @@ class UserService {
 
         val resultCode: Int = userActivityMapper.updateByUidAndDeviceCode(newUserActivity)
         if (resultCode > 0) {
-            return Responses.ok(message = "自动登录成功", data = UserStateResp(
-                uid = user.uid,
-                nickname = user.nickname,
-                email = user.email,
-                portraitId = user.portraitId,
-                deviceCode = newUserActivity.deviceCode,
-                deviceName = newUserActivity.deviceName,
-                platformCode = newUserActivity.platformCode,
-                token = newToken,
-                state = newUserActivity.state,
-                lastActive = newUserActivity.lastActive
-            ))
+            return ResponseEntity.status(HttpStatus.OK)
+                .header("Authorization", "Bearer $newToken")
+                .body(Responses.ok(message = "自动登录成功", data = UserStateResp(
+                    uid = user.uid,
+                    nickname = user.nickname,
+                    email = user.email,
+                    portraitId = user.portraitId,
+                    deviceCode = newUserActivity.deviceCode,
+                    deviceName = newUserActivity.deviceName,
+                    platformCode = newUserActivity.platformCode,
+                    token = newToken,
+                    state = newUserActivity.state,
+                    lastActive = newUserActivity.lastActive
+                )) )
         } else {
-            return Responses.fail()
+            return ResponseEntity.ok(Responses.fail())
         }
     }
 

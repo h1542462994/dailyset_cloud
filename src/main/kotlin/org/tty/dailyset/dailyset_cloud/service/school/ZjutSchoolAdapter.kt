@@ -1,5 +1,6 @@
 package org.tty.dailyset.dailyset_cloud.service.school
 
+import io.grpc.StatusRuntimeException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes
@@ -18,6 +19,7 @@ import org.tty.dailyset.dailyset_cloud.mapper.DailySetMetaLinksMapper
 import org.tty.dailyset.dailyset_cloud.mapper.UserTicketBindMapper
 import org.tty.dailyset.dailyset_cloud.util.addNotNull
 import org.tty.dailyset.dailyset_cloud.util.uuid
+import org.tty.dailyset.dailyset_unic.grpc.TicketQueryResponse
 import java.time.LocalDateTime
 
 @Component
@@ -48,9 +50,14 @@ class ZjutSchoolAdapter: SchoolAdapter {
         // 首先确认ticket状态
         val userTicketBind = userTicketBindMapper.findUserTicketBindByUid(userUid)
             ?: return Responses.fail(code = ResponseCodes.ticketNotExist, message = "未绑定ticket")
+        val ticketResult: TicketQueryResponse
 
-        val ticketResult = grpcClientStubs.getTicketClient().query {
-            ticketId = userTicketBind.ticketId
+        try {
+            ticketResult = grpcClientStubs.getTicketClient().query {
+                ticketId = userTicketBind.ticketId
+            }
+        } catch (e: StatusRuntimeException) {
+            return Responses.fail(code = ResponseCodes.unicError, message = "上游服务器出现了错误")
         }
 
         // 没有成功获取到信息

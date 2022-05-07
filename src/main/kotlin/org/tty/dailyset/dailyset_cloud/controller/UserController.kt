@@ -54,9 +54,9 @@ class UserController {
 
     @Anonymous
     @PostMapping("/user/login")
-    fun login(@RequestBody userLoginReq: UserLoginReq): Responses<UserLoginResp> {
+    fun login(@RequestBody userLoginReq: UserLoginReq): ResponseEntity<Responses<UserLoginResp>> {
         if (!userLoginReq.verify()) {
-            return Responses.argError()
+            return ResponseEntity.ok( Responses.argError())
         }
 
         val intent = intentFactory.createUserLoginIntent(userLoginReq)
@@ -66,9 +66,9 @@ class UserController {
 
     @Anonymous
     @PostMapping("/user/autoLogin")
-    fun autoLogin(@RequestBody userAutoLoginReq: UserAutoLoginReq): Responses<UserStateResp> {
+    fun autoLogin(@RequestBody userAutoLoginReq: UserAutoLoginReq): ResponseEntity<Responses<UserStateResp>> {
         if (!userAutoLoginReq.verify()) {
-            return Responses.argError()
+            return ResponseEntity.ok(Responses.argError())
         }
 
         val intent = intentFactory.createUserAutoLoginIntent(userAutoLoginReq)

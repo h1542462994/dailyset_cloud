@@ -1,6 +1,5 @@
 package org.tty.dailyset.dailyset_cloud.bean.entity
 
-import org.tty.dailyset.dailyset_cloud.bean.serializer.LocalDateTimeSerializer
 import org.tty.dailyset.dailyset_cloud.bean.serializer.LocalTimeSerializer
 import java.time.LocalTime
 

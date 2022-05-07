@@ -51,4 +51,6 @@ object ResponseCodes {
      */
     const val ticketNotExist = 10011
 
+    const val unicError = 10012
+
 }

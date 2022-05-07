@@ -26,7 +26,7 @@ class DailySetController {
         requireNotNull(userState)
         requireNotNull(userState.user)
 
-        return Responses.ok(data = dailySetService.getDailysetInfos(userState.user.uid))
+        return dailySetService.getDailysetInfos(userState.user.uid)
     }
 
     @PostMapping("/dailyset/update")

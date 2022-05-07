@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component
 import org.tty.dailyset.dailyset_cloud.bean.DailySetUpdateItemCollection
 import org.tty.dailyset.dailyset_cloud.bean.DailySetUpdateResult
 import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes
+import org.tty.dailyset.dailyset_cloud.bean.Responses
+import org.tty.dailyset.dailyset_cloud.bean.converters.toDailySetUpdateResultTrans
 import org.tty.dailyset.dailyset_cloud.bean.converters.toDailysetUpdateResultNoTrans
 import org.tty.dailyset.dailyset_cloud.bean.entity.*
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetDataType
@@ -57,7 +59,7 @@ class DailySetService {
     /**
      * 获取所有Dailyset的数据.
      */
-    suspend fun getDailysetInfos(userUid: Int): List<DailySet> {
+    suspend fun getDailysetInfos(userUid: Int): Responses<List<DailySet>>  {
         val resultList = mutableListOf<DailySet>()
 
         // 获取自动课表
@@ -76,7 +78,7 @@ class DailySetService {
             resultList.addAll(dailySets)
         }
 
-        return resultList
+        return Responses.ok(code = resp.code, message = resp.message, data = resultList)
     }
 
     /**
@@ -113,7 +115,7 @@ class DailySetService {
             metaVersion = intent.dailySet.metaVersion
         ))
         return if (response.code == ResponseCodes.success) {
-            response.data.toDailysetUpdateResultNoTrans()
+            response.data.toDailySetUpdateResultTrans()
         } else {
             null
         }
