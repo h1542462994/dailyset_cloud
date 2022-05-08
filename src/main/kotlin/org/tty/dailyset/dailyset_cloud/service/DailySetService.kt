@@ -217,7 +217,7 @@ class DailySetService {
         val dailySetBasicMetaItems = DailySetUpdateItemCollection(
             type = DailySetDataType.Meta.value,
             subType = DailySetMetaType.BasicMeta.value,
-            updates = dailySetBasicMetaResourceAdapter.getUpdatedItems(intent.dailySet.uid, intent.dailySet.sourceVersion)
+            updates = dailySetBasicMetaResourceAdapter.getUpdatedItems(intent.dailySet.uid, intent.dailySet.metaVersion)
         )
         return if (dailySetBasicMetaItems.updates.isNotEmpty()) {
             dailySetBasicMetaItems
@@ -230,7 +230,7 @@ class DailySetService {
         val dailySetUsageMetaItems = DailySetUpdateItemCollection(
             type = DailySetDataType.Meta.value,
             subType = DailySetMetaType.UsageMeta.value,
-            updates = dailySetUsageMetaResourceAdapter.getUpdatedItems(intent.dailySet.uid, intent.dailySet.sourceVersion)
+            updates = dailySetUsageMetaResourceAdapter.getUpdatedItems(intent.dailySet.uid, intent.dailySet.metaVersion)
         )
         return if (dailySetUsageMetaItems.updates.isNotEmpty()) {
             dailySetUsageMetaItems

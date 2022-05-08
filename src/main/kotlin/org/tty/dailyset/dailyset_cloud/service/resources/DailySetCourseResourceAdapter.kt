@@ -22,7 +22,7 @@ class DailySetCourseResourceAdapter: ResourceAdapter<DailySetCourse> {
         val dailySetSourceLinks =
             dailySetSourceLinkMapper.findAllDailySetSourceLinkByDailySetUidAndSourceTypeAndVersionsLargerThan(
                 dailySetUid,
-                DailySetSourceType.Row.value,
+                DailySetSourceType.Course.value,
                 oldVersion
             )
         if (dailySetSourceLinks.isEmpty()) {
