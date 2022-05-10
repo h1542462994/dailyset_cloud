@@ -60,5 +60,9 @@ data class Responses<T>(
         fun <T> deviceCodeError(): Responses<T> {
             return fail(ResponseCodes.deviceCodeError, "当前设备不存在")
         }
+
+        fun <T> secretError(): Responses<T> {
+            return fail(ResponseCodes.secretError, "secret错误")
+        }
     }
 }

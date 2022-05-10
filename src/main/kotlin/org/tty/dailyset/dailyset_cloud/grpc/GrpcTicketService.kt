@@ -15,7 +15,7 @@ import org.tty.dailyset.dailyset_cloud.mapper.UserTicketBindMapper
 import org.tty.dailyset.dailyset_cloud.service.UserService
 
 @GrpcService
-class TicketGrpcService: TicketServiceCoroutineGrpc.TicketServiceImplBase() {
+class GrpcTicketService: TicketServiceCoroutineGrpc.TicketServiceImplBase() {
 
     @Autowired
     private lateinit var grpcClientStubs: GrpcClientStubs

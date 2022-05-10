@@ -31,6 +31,7 @@ class MvcConfig: WebMvcConfigurer{
             .addPathPatterns("/me")
             .addPathPatterns("/user/**")
             .addPathPatterns("/dailyset/**")
+            .addPathPatterns("/message/**")
     }
 
 

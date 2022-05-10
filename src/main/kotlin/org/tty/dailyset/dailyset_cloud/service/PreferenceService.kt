@@ -13,6 +13,7 @@ class PreferenceService {
     @Autowired
     private lateinit var preferenceMapper: PreferenceMapper
 
+    @Suppress("SameParameterValue")
     private fun getValueOrDefault(preferenceName: PreferenceName): String {
         val default = preferenceName.defaultValue
         val preference = preferenceMapper.getPreference(preferenceName.value)
@@ -20,6 +21,7 @@ class PreferenceService {
         return checkNotNull(if (useDefault) default else preference?.value)
     }
 
+    @Suppress("SameParameterValue")
     private fun setValue(preferenceName: PreferenceName, value: String): Boolean {
         val preference = preferenceMapper.getPreference(preferenceName.value)
         val result: Int = if (preference == null) {

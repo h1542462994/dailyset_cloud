@@ -42,6 +42,11 @@ object ResponseCodes {
     const val deviceCodeError = 104
 
     /**
+     * secretError: 105
+     */
+    const val secretError = 105
+
+    /**
      * ticketExist
      */
     const val ticketExist = 10010
@@ -52,5 +57,6 @@ object ResponseCodes {
     const val ticketNotExist = 10011
 
     const val unicError = 10012
+
 
 }

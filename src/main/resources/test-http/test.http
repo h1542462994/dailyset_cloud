@@ -82,3 +82,18 @@ Authorization: Bearer {{auth_token}}
   "matteVersion": 0,
   "metaVersion": 0
 }
+
+### /message/post/system
+POST http://{{location}}/message/post/system
+Content-Type: application/json
+
+{
+  "secret": "eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY1MjE2ODE4NiwiaWF0IjoxNjUyMTY4MTg2fQ.ATg-DVcatCozc4UOfasef7BbgKqYkETjUE4vx3bu2DM",
+  "targets": ["100002"],
+  "intent": {
+    "topic": "system",
+    "referer": "system",
+    "code": 0,
+    "content": "HttpUnitTest发送了一条测试消息"
+  }
+}

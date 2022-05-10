@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.tty.dailyset.dailyset_cloud.bean.entity.DailySet
 import org.tty.dailyset.dailyset_cloud.bean.enums.PlatformCode
-import org.tty.dailyset.dailyset_cloud.bean.req.DailySetUpdateReq
-import org.tty.dailyset.dailyset_cloud.bean.req.UserAutoLoginReq
-import org.tty.dailyset.dailyset_cloud.bean.req.UserLoginReq
-import org.tty.dailyset.dailyset_cloud.bean.req.UserRegisterReq
+import org.tty.dailyset.dailyset_cloud.bean.req.*
 import org.tty.dailyset.dailyset_cloud.intent.*
 
 /**
@@ -72,6 +69,14 @@ class IntentFactory {
                 matteVersion = dailysetUpdateReq.matteVersion!!,
                 metaVersion = dailysetUpdateReq.metaVersion!!,
             )
+        )
+    }
+
+    fun createMessagePostSystemIntent(messagePostSystemReq: MessagePostSystemReq): MessagePostSystemIntent {
+        return MessagePostSystemIntent(
+            secret = messagePostSystemReq.secret!!,
+            targets = messagePostSystemReq.targets,
+            intent = messagePostSystemReq.intent!!
         )
     }
 
