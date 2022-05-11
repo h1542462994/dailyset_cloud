@@ -72,8 +72,8 @@ class IntentFactory {
         )
     }
 
-    fun createMessagePostSystemIntent(messagePostSystemReq: MessagePostSystemReq): MessagePostSystemIntent {
-        return MessagePostSystemIntent(
+    fun createMessagePostSystemIntent(messagePostSystemReq: MessagePostReq): MessagePostIntent {
+        return MessagePostIntent(
             secret = messagePostSystemReq.secret!!,
             targets = messagePostSystemReq.targets,
             intent = messagePostSystemReq.intent!!

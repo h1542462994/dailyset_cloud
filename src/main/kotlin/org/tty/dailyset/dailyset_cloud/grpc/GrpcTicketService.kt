@@ -61,27 +61,38 @@ class GrpcTicketService: TicketServiceCoroutineGrpc.TicketServiceImplBase() {
             }
         }
 
-        // 请求建立ticket
-        val client = grpcClientStubs.getTicketClient()
-        val response = client.bind {
-            uid = request.uid
-            password = request.password
+
+        try {
+            // 请求建立ticket
+            val client = grpcClientStubs.getTicketClient()
+            val response = client.bind {
+                uid = request.uid
+                password = request.password
+            }
+
+            // 建立成功
+            return if (response.success) {
+                val userTicketBind = UserTicketBind(userState.user.uid, ticketId = response.ticket.ticketId)
+                userTicketBindMapper.addUserTicketBind(userTicketBind)
+                TicketBindResponse {
+                    code = ResponseCodes.success
+                    message = "请求成功"
+                }
+            } else {
+                TicketBindResponse {
+                    code = ResponseCodes.fail
+                    message = "请求失败"
+                }
+            }
+        } catch (e: Exception) {
+            logger.error("GrpcTicketService", e)
+            return TicketBindResponse {
+                code = ResponseCodes.fail
+                message = "服务发生了未知异常 ${e.message}"
+            }
         }
 
-        // 建立成功
-        return if (response.success) {
-            val userTicketBind = UserTicketBind(userState.user.uid, ticketId = response.ticket.ticketId)
-            userTicketBindMapper.addUserTicketBind(userTicketBind)
-            TicketBindResponse {
-                code = ResponseCodes.success
-                message = "请求成功"
-            }
-        } else {
-            TicketBindResponse {
-                code = ResponseCodes.fail
-                message = "请求失败"
-            }
-        }
+
     }
 
     /**

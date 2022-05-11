@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import org.tty.dailyset.dailyset_cloud.auth.Anonymous
 import org.tty.dailyset.dailyset_cloud.bean.Responses
-import org.tty.dailyset.dailyset_cloud.bean.req.MessagePostSystemReq
+import org.tty.dailyset.dailyset_cloud.bean.req.MessagePostReq
 import org.tty.dailyset.dailyset_cloud.component.IntentFactory
 import org.tty.dailyset.dailyset_cloud.service.MessageService
 
@@ -21,7 +21,7 @@ class MessageController {
 
     @Anonymous
     @PostMapping("/message/post/system")
-    suspend fun messagePostSystem(@RequestBody req: MessagePostSystemReq): Responses<Int> {
+    suspend fun messagePostSystem(@RequestBody req: MessagePostReq): Responses<Int> {
         if (!req.verify()) {
             return Responses.argError()
         }
@@ -29,5 +29,17 @@ class MessageController {
         val intent = intentFactory.createMessagePostSystemIntent(req)
         return messageService.messagePostSystem(intent)
     }
+
+    @Anonymous
+    @PostMapping("/message/post/ticket")
+    suspend fun messagePostTicket(@RequestBody req: MessagePostReq): Responses<Int> {
+        if (!req.verify()) {
+            return Responses.argError()
+        }
+
+        val intent = intentFactory.createMessagePostSystemIntent(req)
+        return messageService.messagePostTicket(intent)
+    }
+
 
 }

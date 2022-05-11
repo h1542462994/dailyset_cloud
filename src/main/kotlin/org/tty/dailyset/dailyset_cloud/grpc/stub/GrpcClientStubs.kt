@@ -11,13 +11,8 @@ class GrpcClientStubs {
     @Autowired
     private lateinit var grpcClientCreator: GrpcClientFactory
 
-    private var ticketClient: TicketServiceCoroutineGrpc.TicketServiceCoroutineStub? = null
-
     fun getTicketClient(): TicketServiceCoroutineGrpc.TicketServiceCoroutineStub {
-        if (ticketClient == null) {
-            ticketClient = TicketServiceCoroutineGrpc.newStub(grpcClientCreator.getChannel())
-        }
-        return ticketClient!!
+        return TicketServiceCoroutineGrpc.newStub(grpcClientCreator.getChannel())
     }
 
 }

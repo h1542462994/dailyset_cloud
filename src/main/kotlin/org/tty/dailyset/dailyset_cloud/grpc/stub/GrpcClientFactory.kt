@@ -5,27 +5,34 @@ import io.grpc.ManagedChannelBuilder
 import io.grpc.netty.GrpcSslContexts
 import io.grpc.netty.NettyChannelBuilder
 import io.netty.handler.ssl.SslContext
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import java.io.File
+import java.io.InputStream
+import java.net.InetAddress
 
 @Component
 class GrpcClientFactory {
-    @Value("\${dailyset.env.grpc.unic.port}")
+    @Value("\${dailyset.env.client.grpc.port}")
     private var grpcPort: Int = 0
-    @Value("\${dailyset.env.grpc.unic.address}")
+    @Value("\${dailyset.env.client.address}")
     private lateinit var grpcAddress: String
-    @Value("\${grpc.server.security.enabled}")
+    @Value("\${dailyset.env.client.security.enabled}")
     private var grpcSecurityEnabled = false
     @Value("\${dailyset.env.client.certificate-authority}")
-    private lateinit var grpcClientCA: File
+    private lateinit var grpcClientCA: InputStream
     @Value("\${dailyset.env.client.certificate-chain}")
-    private lateinit var grpcClientCrt: File
+    private lateinit var grpcClientCrt: InputStream
     @Value("\${dailyset.env.client.private-key}")
-    private lateinit var grpcGrpcKey: File
+    private lateinit var grpcGrpcKey: InputStream
+    @Value("\${dailyset.env.client.usedocker}")
+    private var useDocker = false
+
 
     private var channel: ManagedChannel? = null
     private var sslContext: SslContext? = null
+
+    private val logger = LoggerFactory.getLogger(GrpcClientFactory::class.java)
 
     fun getSslContext(): SslContext {
         if (sslContext == null) {
@@ -39,12 +46,20 @@ class GrpcClientFactory {
 
     fun getChannel(): ManagedChannel {
         if (channel == null) {
+            var realAddress = grpcAddress
+            if (useDocker) {
+                val inetAddress = InetAddress.getByName(grpcAddress)
+                realAddress = inetAddress.hostAddress
+            }
+
+            logger.debug("real unic grpc address is $realAddress")
+
             channel = if (!grpcSecurityEnabled) {
-                ManagedChannelBuilder.forAddress(grpcAddress, grpcPort)
+                ManagedChannelBuilder.forAddress(realAddress, grpcPort)
                     .usePlaintext()
                     .build()
             } else {
-               NettyChannelBuilder.forAddress(grpcAddress, grpcPort)
+                NettyChannelBuilder.forAddress(realAddress, grpcPort)
                     .sslContext(getSslContext())
                     .build()
             }

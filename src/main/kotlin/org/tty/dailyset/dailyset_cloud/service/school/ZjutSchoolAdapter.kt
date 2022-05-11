@@ -1,6 +1,7 @@
 package org.tty.dailyset.dailyset_cloud.service.school
 
 import io.grpc.StatusRuntimeException
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes
@@ -45,6 +46,8 @@ class ZjutSchoolAdapter: SchoolAdapter {
     @Autowired
     private lateinit var dailySetMetaLinksMapper: DailySetMetaLinksMapper
 
+    private val logger = LoggerFactory.getLogger(ZjutSchoolAdapter::class.java)
+
     override suspend fun getSchoolDailySets(userUid: Int): Responses<List<DailySet>> {
 
         // 首先确认ticket状态
@@ -88,10 +91,15 @@ class ZjutSchoolAdapter: SchoolAdapter {
      * 从远程服务器中获取信息
      */
     private suspend fun getRemoteDailySets(ticketId: String): List<DailySet> {
-        val response = dailySetUnicApi.dailySetInfos(DailySetInfosReqUnic(ticketId = ticketId))
-        return if (response.code == ResponseCodes.success) {
-            response.data!!
-        } else {
+        val response = dailySetUnicApi.dailySetInfos(ticketId = ticketId)
+        return try {
+            if (response.code == ResponseCodes.success) {
+                response.data!!
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            logger.error("on get unic info error:", e)
             emptyList()
         }
     }
