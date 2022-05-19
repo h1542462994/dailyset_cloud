@@ -135,6 +135,7 @@ class TicketService {
             if (!resultUnbind.success) {
                 return Responses.fail(message = "在解除绑定中发生了错误")
             }
+            userTicketBindMapper.removeUserTicketBindByUid(userTicketBindExisted.uid)
             return Responses.ok()
         } catch (e: Exception) {
             logger.error("on unbind", e)
