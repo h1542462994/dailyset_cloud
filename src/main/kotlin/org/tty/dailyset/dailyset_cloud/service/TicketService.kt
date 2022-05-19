@@ -170,7 +170,33 @@ class TicketService {
     }
 
     suspend fun forceFetch(intent: UserStateIntent): Responses<Unit> {
-        return Responses.ok()
+        val userState = userService.internalState(
+            intentFactory.createUserStateIntent(intent.token)
+        )
+
+        if (!userState.isActive()) {
+            return Responses.tokenError()
+        }
+
+        requireNotNull(userState.user)
+
+        // if not bind
+        val userTicketBindExisted = userTicketBindMapper.findUserTicketBindByUid(userState.user.uid)
+            ?: return Responses.fail(ResponseCodes.ticketNotExist)
+
+        return try {
+            val response = grpcClientStubs.getTicketClient().forceFetch {
+                ticketId = userTicketBindExisted.ticketId
+            }
+            if (response.success) {
+                Responses.ok()
+            } else {
+                Responses.fail()
+            }
+        } catch (e: Exception) {
+            logger.error("on ticket force fetch", e)
+            Responses.fail(message = "服务发生了未知异常 ${e.message}")
+        }
     }
 
 }
