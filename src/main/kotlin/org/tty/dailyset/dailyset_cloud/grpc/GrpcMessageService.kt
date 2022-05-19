@@ -28,9 +28,6 @@ class GrpcMessageService: MessageServiceCoroutineGrpc.MessageServiceImplBase() {
 
         if (userState.isActive()) {
             requireNotNull(userState.user)
-            responseChannel.invokeOnClose {
-                messageHolder.disconnectMessageFlow(userState.user.uid.toString())
-            }
 
             try {
                 val messageChannel = messageHolder.connectMessageFlow(userState.user.uid.toString())
@@ -46,6 +43,7 @@ class GrpcMessageService: MessageServiceCoroutineGrpc.MessageServiceImplBase() {
             } catch (e: Exception) {
                 throw e
             } finally {
+                messageHolder.disconnectMessageFlow(userState.user.uid.toString())
                 responseChannel.close()
             }
         } else {
