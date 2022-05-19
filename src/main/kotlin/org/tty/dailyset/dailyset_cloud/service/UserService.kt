@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import org.springframework.util.MultiValueMap
-import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes
 import org.tty.dailyset.dailyset_cloud.bean.Responses
 import org.tty.dailyset.dailyset_cloud.bean.UserState
 import org.tty.dailyset.dailyset_cloud.bean.entity.UserActivity
@@ -22,11 +20,8 @@ import org.tty.dailyset.dailyset_cloud.bean.resp.UserRegisterResp
 import org.tty.dailyset.dailyset_cloud.bean.resp.UserStateResp
 import org.tty.dailyset.dailyset_cloud.component.EncryptProvider
 import org.tty.dailyset.dailyset_cloud.component.EnvironmentVars
-import org.tty.dailyset.dailyset_cloud.component.IntentFactory
 import org.tty.dailyset.dailyset_cloud.component.JwtToken
 import org.tty.dailyset.dailyset_cloud.intent.*
-import org.tty.dailyset.dailyset_cloud.mapper.PreferenceMapper
-import org.tty.dailyset.dailyset_cloud.mapper.SysEnvMapper
 import org.tty.dailyset.dailyset_cloud.mapper.UserActivityMapper
 import org.tty.dailyset.dailyset_cloud.mapper.UserMapper
 import org.tty.dailyset.dailyset_cloud.util.uuid
