@@ -32,6 +32,7 @@ class TicketService {
 
     private val logger = LoggerFactory.getLogger(TicketService::class.java)
 
+    @Suppress("DuplicatedCode")
     suspend fun bind(intent: TicketBindIntent): Responses<Unit> {
         val userState = userService.internalState(
             intentFactory.createUserStateIntent(intent.token)
@@ -71,11 +72,74 @@ class TicketService {
     }
 
     suspend fun rebind(intent: TicketBindIntent): Responses<Unit> {
-        return Responses.ok()
+        val userState = userService.internalState(
+            intentFactory.createUserStateIntent(intent.token)
+        )
+
+        if (!userState.isActive()) {
+            return Responses.tokenError()
+        }
+
+        requireNotNull(userState.user)
+
+        // if not bind
+        val userTicketBindExisted = userTicketBindMapper.findUserTicketBindByUid(userState.user.uid)
+            ?: return Responses.fail(ResponseCodes.ticketNotExist)
+
+
+        try {
+            // call unbind
+            val resultUnbind = grpcClientStubs.getTicketClient().unbind {
+                ticketId = userTicketBindExisted.ticketId
+            }
+            if (!resultUnbind.success) {
+                return Responses.fail(message = "在解除绑定中发生了错误")
+            }
+            // call bind
+            val resultBind = grpcClientStubs.getTicketClient().bind {
+                uid = intent.studentUid
+                password = intent.password
+            }
+            if (!resultBind.success) {
+                return Responses.fail(message = "在绑定中发生了错误")
+            }
+            val userTicketBind = UserTicketBind(userState.user.uid, ticketId = resultBind.ticket.ticketId)
+            userTicketBindMapper.updateUserTicketBindByUid(userTicketBind)
+            return Responses.ok()
+        } catch (e: Exception) {
+            logger.error("on rebind", e)
+            return Responses.fail(message = "服务发生了未知异常 ${e.message}")
+        }
+
+
     }
 
     suspend fun unbind(intent: UserStateIntent): Responses<Unit> {
-        return Responses.ok()
+        val userState = userService.internalState(
+            intentFactory.createUserStateIntent(intent.token)
+        )
+
+        if (!userState.isActive()) {
+            return Responses.tokenError()
+        }
+
+        requireNotNull(userState.user)
+        val userTicketBindExisted = userTicketBindMapper.findUserTicketBindByUid(userState.user.uid)
+            ?: return Responses.fail(ResponseCodes.ticketNotExist)
+
+        try {
+            // call unbind
+            val resultUnbind = grpcClientStubs.getTicketClient().unbind {
+                ticketId = userTicketBindExisted.ticketId
+            }
+            if (!resultUnbind.success) {
+                return Responses.fail(message = "在解除绑定中发生了错误")
+            }
+            return Responses.ok()
+        } catch (e: Exception) {
+            logger.error("on unbind", e)
+            return Responses.fail(message = "服务发生了未知异常 ${e.message}")
+        }
     }
 
     suspend fun currentBindInfo(intent: UserStateIntent): Responses<TicketInfoResp> {
