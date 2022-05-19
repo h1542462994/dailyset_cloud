@@ -1,6 +1,7 @@
 package org.tty.dailyset.dailyset_cloud.grpc
 
 import io.grpc.StatusRuntimeException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.collect
@@ -20,14 +21,19 @@ class GrpcMessageService: MessageServiceCoroutineGrpc.MessageServiceImplBase() {
     @Autowired
     private lateinit var userService: UserService
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun connect(request: MessageBindRequest, responseChannel: SendChannel<MessageBundle>) {
         val token = request.token.value
         val userState = userService.internalState(UserStateIntent(token))
 
         if (userState.isActive()) {
             requireNotNull(userState.user)
-            val messageChannel = messageHolder.connectMessageFlow(userState.user.uid.toString())
+            responseChannel.invokeOnClose {
+                messageHolder.disconnectMessageFlow(userState.user.uid.toString())
+            }
+
             try {
+                val messageChannel = messageHolder.connectMessageFlow(userState.user.uid.toString())
                 messageChannel.collect {
                     responseChannel.send(MessageBundle {
                         topic = it.topic
@@ -36,10 +42,11 @@ class GrpcMessageService: MessageServiceCoroutineGrpc.MessageServiceImplBase() {
                         content = it.content
                     })
                 }
+
             } catch (e: Exception) {
                 throw e
             } finally {
-                messageHolder.disconnectMessageFlow(userState.user.uid.toString())
+                responseChannel.close()
             }
         } else {
             responseChannel.close()

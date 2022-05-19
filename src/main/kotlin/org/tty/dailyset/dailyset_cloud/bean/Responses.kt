@@ -50,8 +50,8 @@ data class Responses<T>(
         /**
          * token error response entity.
          */
-        fun <T> tokenError(): Responses<T> {
-            return fail(ResponseCodes.tokenError, "token错误")
+        fun <T> tokenError(message: String = "token错误"): Responses<T> {
+            return fail(ResponseCodes.tokenError, message)
         }
 
         /**

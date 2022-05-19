@@ -80,5 +80,12 @@ class UserController {
         return Responses.ok(data = userState.castToUserStateResp())
     }
 
+    @PostMapping("/user/logout")
+    fun logout(userState: UserState?): Responses<Int> {
+        requireNotNull(userState)
+        val intent = intentFactory.createUserLogoutIntent(userState)
+        return userService.logout(intent)
+    }
+
 
 }

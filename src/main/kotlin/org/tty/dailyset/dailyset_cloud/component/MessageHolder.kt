@@ -21,7 +21,7 @@ class MessageHolder {
         synchronized(messageFlowSaver) {
             val existed = messageFlowSaver[uid]
             if (existed == null) {
-                messageFlowSaver[uid] = MutableSharedFlow(replay = 0, extraBufferCapacity = 10, onBufferOverflow = BufferOverflow.SUSPEND)
+                messageFlowSaver[uid] = MutableSharedFlow(replay = 0, extraBufferCapacity = 10, onBufferOverflow = BufferOverflow.DROP_OLDEST)
                 messageFlowCounts[uid] = 0
             }
 
@@ -36,10 +36,10 @@ class MessageHolder {
      */
     fun disconnectMessageFlow(uid: String) {
         synchronized(messageFlowSaver) {
-            val existed = messageFlowSaver[uid] ?: return
+            messageFlowSaver[uid] ?: return
             messageFlowCounts[uid] = messageFlowCounts[uid]!! - 1
             if (messageFlowCounts[uid] == 0) {
-                val messageFlow = messageFlowSaver.remove(uid)
+                messageFlowSaver.remove(uid)
             }
             logger.info("user $uid disconnected message service, now count: ${messageFlowCounts[uid]}")
         }
@@ -51,7 +51,7 @@ class MessageHolder {
         }.map { it.value }
 
         for (messageFlow in availableMessageFlows) {
-            (messageFlow as MutableSharedFlow<MessageIntent>).emit(messageIntent)
+            (messageFlow as MutableSharedFlow<MessageIntent>).tryEmit(messageIntent)
         }
     }
 }

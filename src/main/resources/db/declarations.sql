@@ -127,8 +127,8 @@ CREATE TABLE IF NOT EXISTS `dailyset_row`
     `source_uid`    VARCHAR(64) NOT NULL, # 资源的id
     `table_uid`     VARCHAR(64) NOT NULL, # 表的id
     `current_index` INTEGER     NOT NULL, # 当前索引
-    `weekdays`      VARCHAR(64) NOT NULL, # 星期
-    `counts`        VARCHAR(64) NOT NULL, # 结束
+    `weekdays`      VARCHAR(64) NOT NULL, # 周数
+    `counts`        VARCHAR(64) NOT NULL, # 节数
     PRIMARY KEY (source_uid)
 );
 
@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `dailyset_course`
 (
     `source_uid`    VARCHAR(64) NOT NULL, # 资源的id
     `year`          INTEGER     NOT NULL, # 名称
-    `period_code`   INTEGER     NOT NULL, # 周期码
+    `period_code`   INTEGER     NOT NULL, # 时期码
     `name`          VARCHAR(64) NOT NULL, # 名称
     `campus`        VARCHAR(64) NOT NULL, # 校区
     `location`      VARCHAR(64) NOT NULL, # 地点

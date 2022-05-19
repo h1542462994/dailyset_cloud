@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.util.MultiValueMap
+import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes
 import org.tty.dailyset.dailyset_cloud.bean.Responses
 import org.tty.dailyset.dailyset_cloud.bean.UserState
 import org.tty.dailyset.dailyset_cloud.bean.entity.UserActivity
@@ -23,10 +24,7 @@ import org.tty.dailyset.dailyset_cloud.component.EncryptProvider
 import org.tty.dailyset.dailyset_cloud.component.EnvironmentVars
 import org.tty.dailyset.dailyset_cloud.component.IntentFactory
 import org.tty.dailyset.dailyset_cloud.component.JwtToken
-import org.tty.dailyset.dailyset_cloud.intent.UserAutoLoginIntent
-import org.tty.dailyset.dailyset_cloud.intent.UserLoginIntent
-import org.tty.dailyset.dailyset_cloud.intent.UserRegisterIntent
-import org.tty.dailyset.dailyset_cloud.intent.UserStateIntent
+import org.tty.dailyset.dailyset_cloud.intent.*
 import org.tty.dailyset.dailyset_cloud.mapper.PreferenceMapper
 import org.tty.dailyset.dailyset_cloud.mapper.SysEnvMapper
 import org.tty.dailyset.dailyset_cloud.mapper.UserActivityMapper
@@ -230,6 +228,18 @@ class UserService {
         )
 
         return Responses.ok(message = "获取用户状态成功", data = userStateResp)
+    }
+
+    fun logout(userLogoutIntent: UserLogoutIntent): Responses<Int> {
+        val updateUserActivity = userLogoutIntent.userActivity.copy(
+            state = PlatformState.LEAVE.state
+        )
+        val result = userActivityMapper.updateByUidAndDeviceCode(updateUserActivity)
+        return if (result > 0) {
+            Responses.ok()
+        } else {
+            Responses.fail()
+        }
     }
 
     fun internalState(userStateIntent: UserStateIntent): UserState? {

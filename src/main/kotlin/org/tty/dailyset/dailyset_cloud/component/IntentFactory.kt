@@ -9,10 +9,12 @@ package org.tty.dailyset.dailyset_cloud.component
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.tty.dailyset.dailyset_cloud.bean.UserState
 import org.tty.dailyset.dailyset_cloud.bean.entity.DailySet
 import org.tty.dailyset.dailyset_cloud.bean.enums.PlatformCode
 import org.tty.dailyset.dailyset_cloud.bean.req.*
 import org.tty.dailyset.dailyset_cloud.intent.*
+import org.tty.dailyset.dailyset_cloud.grpc.TicketBindRequest
 
 /**
  * intentFactory
@@ -55,8 +57,23 @@ class IntentFactory {
         return UserStateIntent(token)
     }
 
+
+    /**
+     * create [UserAutoLoginIntent]
+     */
     fun createUserAutoLoginIntent(userAutoLoginReq: UserAutoLoginReq): UserAutoLoginIntent {
         return UserAutoLoginIntent(userAutoLoginReq.token!!)
+    }
+
+    /**
+     * create [UserLogoutIntent]
+     */
+    fun createUserLogoutIntent(userState: UserState): UserLogoutIntent {
+        return UserLogoutIntent(
+            user = userState.user!!,
+            userActivity = userState.userActivity!!,
+            token = userState.token!!
+        )
     }
 
     fun createDailySetUpdateIntent(userUid: Int, dailysetUpdateReq: DailySetUpdateReq): DailySetUpdateIntent {
@@ -77,6 +94,14 @@ class IntentFactory {
             secret = messagePostSystemReq.secret!!,
             targets = messagePostSystemReq.targets,
             intent = messagePostSystemReq.intent!!
+        )
+    }
+
+    fun createTicketBindIntent(/*grpc param*/ ticketBindRequest: TicketBindRequest): TicketBindIntent {
+        return TicketBindIntent(
+            token = ticketBindRequest.token.value,
+            studentUid = ticketBindRequest.uid,
+            password = ticketBindRequest.password
         )
     }
 
