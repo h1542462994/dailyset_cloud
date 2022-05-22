@@ -6,4 +6,4 @@ class MessagePostIntent(
     val secret: String,
     val targets: List<String>,
     val intent: MessageIntent
-)
+): RequestIntent

@@ -35,7 +35,7 @@ class DailySetBasicMetaResourceAdapter: ResourceAdapter<DailySetBasicMeta> {
                 updateVersion = metaLink.updateVersion,
                 removeVersion = metaLink.removeVersion,
                 lastTick = metaLink.lastTick,
-                data = dailySetBasicMeta
+                data = dailySetBasicMeta!!
             )
         )
     }

@@ -23,7 +23,7 @@ class MessageService {
     /**
      * post system messages to the users, identified by **user.uid**
      */
-    suspend fun messagePostSystem(messagePostSystemIntent: MessagePostIntent): Responses<Int> {
+    suspend fun messagePostSystem(messagePostSystemIntent: MessagePostIntent): Responses<Unit> {
         if (messagePostSystemIntent.secret != messageSecret) {
             return Responses.secretError()
         }
@@ -34,7 +34,7 @@ class MessageService {
     /**
      * post ticket messages to the users, identified by **ticket_id**
      */
-    suspend fun messagePostTicket(messagePostSystemIntent: MessagePostIntent): Responses<Int> {
+    suspend fun messagePostTicket(messagePostSystemIntent: MessagePostIntent): Responses<Unit> {
         if (messagePostSystemIntent.secret != messageSecret) {
             return Responses.secretError()
         }

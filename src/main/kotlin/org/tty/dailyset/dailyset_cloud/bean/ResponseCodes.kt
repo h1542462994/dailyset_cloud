@@ -58,5 +58,11 @@ object ResponseCodes {
 
     const val unicError = 10012
 
+    const val resourceNoAuth = 10013
+
+    /**
+     * readOnly
+     */
+    const val resourceReadOnly = 10014
 
 }

@@ -4,5 +4,4 @@ class TicketBindIntent(
     val token: String,
     val studentUid: String,
     val password: String
-) {
-}
+): RequestIntent

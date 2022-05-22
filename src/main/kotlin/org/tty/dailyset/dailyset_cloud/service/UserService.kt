@@ -225,7 +225,7 @@ class UserService {
         return Responses.ok(message = "获取用户状态成功", data = userStateResp)
     }
 
-    fun logout(userLogoutIntent: UserLogoutIntent): Responses<Int> {
+    fun logout(userLogoutIntent: UserLogoutIntent): Responses<Unit> {
         val updateUserActivity = userLogoutIntent.userActivity.copy(
             state = PlatformState.LEAVE.state
         )

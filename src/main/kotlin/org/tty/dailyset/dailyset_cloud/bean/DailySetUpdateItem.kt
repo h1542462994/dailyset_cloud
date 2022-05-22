@@ -15,5 +15,5 @@ data class DailySetUpdateItem<T: Any>(
     @kotlinx.serialization.Serializable(with = LocalDateTimeSerializer::class)
     override val lastTick: LocalDateTime,
 
-    val data: T?
+    val data: T
 ): UpdatableItemLink

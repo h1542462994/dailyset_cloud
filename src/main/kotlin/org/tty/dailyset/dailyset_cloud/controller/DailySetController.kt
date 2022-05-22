@@ -8,6 +8,7 @@ import org.tty.dailyset.dailyset_cloud.bean.DailySetUpdateResult
 import org.tty.dailyset.dailyset_cloud.bean.Responses
 import org.tty.dailyset.dailyset_cloud.bean.UserState
 import org.tty.dailyset.dailyset_cloud.bean.entity.DailySet
+import org.tty.dailyset.dailyset_cloud.bean.req.DailySetSubmitReq
 import org.tty.dailyset.dailyset_cloud.bean.req.DailySetUpdateReq
 import org.tty.dailyset.dailyset_cloud.component.IntentFactory
 import org.tty.dailyset.dailyset_cloud.service.DailySetService
@@ -38,7 +39,14 @@ class DailySetController {
         return Responses.ok(data = dailySetService.getUpdates(intent))
     }
 
+    @PostMapping("/dailyset/submit")
+    suspend fun dailySetSubmit(userState: UserState?, @RequestBody dailySetSubmitReq: DailySetSubmitReq): Responses<Unit> {
+        requireNotNull(userState)
+        requireNotNull(userState.user)
 
+        val intent = intentFactory.createDailySetSubmitIntent(userState.user.uid, dailySetSubmitReq)
+        return dailySetService.submitLocalChanges(intent)
+    }
 
 
 }

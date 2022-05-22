@@ -79,7 +79,7 @@ class UserController {
     }
 
     @PostMapping("/user/logout")
-    fun logout(userState: UserState?): Responses<Int> {
+    fun logout(userState: UserState?): Responses<Unit> {
         requireNotNull(userState)
         val intent = intentFactory.createUserLogoutIntent(userState)
         return userService.logout(intent)

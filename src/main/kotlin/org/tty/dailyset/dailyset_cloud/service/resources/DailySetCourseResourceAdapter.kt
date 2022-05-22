@@ -47,7 +47,7 @@ class DailySetCourseResourceAdapter: ResourceAdapter<DailySetCourse> {
                 updateVersion = it.updateVersion,
                 removeVersion = it.removeVersion,
                 lastTick = it.lastTick,
-                data = dailySetCourseMap[it.sourceUid]
+                data = dailySetCourseMap[it.sourceUid]!!
             )
         }
     }

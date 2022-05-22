@@ -47,7 +47,7 @@ class DailySetUsageMetaResourceAdapter: ResourceAdapter<DailySetUsageMeta> {
                 updateVersion = it.updateVersion,
                 removeVersion = it.removeVersion,
                 lastTick = it.lastTick,
-                data = dailySetUsageMetaMap[it.metaUid]
+                data = dailySetUsageMetaMap[it.metaUid]!!
             )
         }
     }

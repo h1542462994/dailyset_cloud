@@ -47,7 +47,7 @@ class DailySetTableResourceAdapter: ResourceAdapter<DailySetTable> {
                 updateVersion = it.updateVersion,
                 removeVersion = it.removeVersion,
                 lastTick = it.lastTick,
-                data = dailySetTableMap[it.sourceUid]
+                data = dailySetTableMap[it.sourceUid]!!
             )
         }
     }

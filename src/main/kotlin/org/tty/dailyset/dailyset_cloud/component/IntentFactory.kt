@@ -10,11 +10,13 @@ package org.tty.dailyset.dailyset_cloud.component
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.tty.dailyset.dailyset_cloud.bean.UserState
+import org.tty.dailyset.dailyset_cloud.bean.converters.toDailySetUpdateResultTrans
 import org.tty.dailyset.dailyset_cloud.bean.entity.DailySet
 import org.tty.dailyset.dailyset_cloud.bean.enums.PlatformCode
 import org.tty.dailyset.dailyset_cloud.bean.req.*
 import org.tty.dailyset.dailyset_cloud.intent.*
 import org.tty.dailyset.dailyset_cloud.grpc.TicketBindRequest
+import org.tty.dailyset.dailyset_cloud.http.resp.DailySetUpdateRawResult
 
 /**
  * intentFactory
@@ -86,6 +88,13 @@ class IntentFactory {
                 matteVersion = dailysetUpdateReq.matteVersion!!,
                 metaVersion = dailysetUpdateReq.metaVersion!!,
             )
+        )
+    }
+
+    fun createDailySetSubmitIntent(userUid: Int, dailySetSubmitReq: DailySetSubmitReq): DailySetSubmitIntent {
+        return DailySetSubmitIntent(
+            userUid = userUid,
+            submitItems = dailySetSubmitReq.submitItems.toDailySetUpdateResultTrans()
         )
     }
 

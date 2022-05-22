@@ -13,6 +13,7 @@ import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetMetaType
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetSourceType
 import org.tty.dailyset.dailyset_cloud.http.DailySetUnicApi
 import org.tty.dailyset.dailyset_cloud.http.req.DailySetUpdateReqUnic
+import org.tty.dailyset.dailyset_cloud.intent.DailySetSubmitIntent
 import org.tty.dailyset.dailyset_cloud.intent.DailySetUpdateIntent
 import org.tty.dailyset.dailyset_cloud.mapper.DailySetMapper
 import org.tty.dailyset.dailyset_cloud.mapper.DailySetUsageMetaMapper
@@ -89,17 +90,28 @@ class DailySetService {
      * 获取某个Dailyset的更新数据
      */
     suspend fun getUpdates(intent: DailySetUpdateIntent): DailySetUpdateResult? {
-        val autoDailySetUids = listOf(
-            "^#school.zjut.course.[\\dA-Za-z_-]+$".toRegex(),
-            "^#school.zjut.unic$".toRegex()
-        )
-        return if (autoDailySetUids.any {
+        return if (UNIC_RESOURCES_REGEX.any {
                 it.matches(intent.dailySet.uid)
             }) {
             getUpdatesOfAuto(intent)
         } else {
             getUpdatesOfLocal(intent)
         }
+    }
+
+    suspend fun submitLocalChanges(intent: DailySetSubmitIntent): Responses<Unit> {
+        return if (UNIC_RESOURCES_REGEX.any {
+                it.matches(intent.submitItems.dailySet.uid)
+            }) {
+            Responses.resourceReadonly()
+        } else {
+            doSubmitLocalChanges(intent.submitItems)
+            Responses.ok()
+        }
+    }
+
+    private fun doSubmitLocalChanges(updateResult: DailySetUpdateResult) {
+
     }
 
     /**
@@ -239,4 +251,11 @@ class DailySetService {
         }
     }
     //endregion
+
+    companion object {
+        val UNIC_RESOURCES_REGEX = listOf(
+            "^#school.zjut.course.[\\dA-Za-z_-]+$".toRegex(),
+            "^#school.zjut.unic$".toRegex()
+        )
+    }
 }

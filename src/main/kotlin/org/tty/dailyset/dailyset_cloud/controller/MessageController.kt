@@ -21,7 +21,7 @@ class MessageController {
 
     @Anonymous
     @PostMapping("/message/post/system")
-    suspend fun messagePostSystem(@RequestBody req: MessagePostReq): Responses<Int> {
+    suspend fun messagePostSystem(@RequestBody req: MessagePostReq): Responses<Unit> {
         if (!req.verify()) {
             return Responses.argError()
         }
@@ -32,7 +32,7 @@ class MessageController {
 
     @Anonymous
     @PostMapping("/message/post/ticket")
-    suspend fun messagePostTicket(@RequestBody req: MessagePostReq): Responses<Int> {
+    suspend fun messagePostTicket(@RequestBody req: MessagePostReq): Responses<Unit> {
         if (!req.verify()) {
             return Responses.argError()
         }

@@ -12,6 +12,7 @@ import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetMetaType
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetSourceType
 import org.tty.dailyset.dailyset_cloud.http.resp.DailySetUpdateRawResult
 
+@Deprecated("not used yet.")
 fun DailySetUpdateRawResult?.toDailysetUpdateResultNoTrans(): DailySetUpdateResult? {
     if (this == null) {
         return null
@@ -23,10 +24,8 @@ fun DailySetUpdateRawResult?.toDailysetUpdateResultNoTrans(): DailySetUpdateResu
     )
 }
 
-fun DailySetUpdateRawResult?.toDailySetUpdateResultTrans(): DailySetUpdateResult? {
-    if (this == null) {
-        return null
-    }
+@JvmName("toDailySetUpdateResultTransSafe")
+fun DailySetUpdateRawResult.toDailySetUpdateResultTrans(): DailySetUpdateResult {
     return DailySetUpdateResult(
         dailySet = this.dailySet,
         updateItems = this.updateItems.map {
@@ -47,10 +46,11 @@ fun DailySetUpdateRawResult?.toDailySetUpdateResultTrans(): DailySetUpdateResult
     )
 }
 
-private fun JsonElement?.castToReal(type: Int, subType: Int): Any? {
-    if (this == null) {
-        return null
-    }
+fun DailySetUpdateRawResult?.toDailySetUpdateResultTrans(): DailySetUpdateResult? {
+    return this?.toDailySetUpdateResultTrans()
+}
+
+private fun JsonElement.castToReal(type: Int, subType: Int): Any {
     return when(type) {
         DailySetDataType.Source.value -> {
             when(subType) {

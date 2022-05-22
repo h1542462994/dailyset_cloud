@@ -16,7 +16,7 @@ interface RequestIntent
  * *UserIntent* is all user related *intent* to the [UserService]
  * @see UserService
  */
-interface UserIntent
+interface UserIntent: RequestIntent
 
 
 

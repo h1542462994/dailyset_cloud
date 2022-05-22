@@ -47,7 +47,7 @@ class DailySetCellResourceAdapter: ResourceAdapter<DailySetCell> {
                 updateVersion = it.updateVersion,
                 removeVersion = it.removeVersion,
                 lastTick = it.lastTick,
-                data = dailySetCellMap[it.sourceUid]
+                data = dailySetCellMap[it.sourceUid]!!
             )
         }
     }

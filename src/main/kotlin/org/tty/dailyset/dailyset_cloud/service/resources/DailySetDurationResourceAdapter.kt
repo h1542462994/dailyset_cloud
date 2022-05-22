@@ -46,7 +46,7 @@ class DailySetDurationResourceAdapter : ResourceAdapter<DailySetDuration> {
                 updateVersion = it.updateVersion,
                 removeVersion = it.removeVersion,
                 lastTick = it.lastTick,
-                data = dailySetDurationsMap[it.sourceUid]
+                data = dailySetDurationsMap[it.sourceUid]!!
             )
         }
     }
