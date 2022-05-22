@@ -14,5 +14,5 @@ interface DailySetDurationMapper {
             </foreach>
         </script>
     """)
-    fun findAllDailySetDurationBySourceUidBatch(sourceUids: List<String>): List<DailySetDuration>
+    fun findAllBySourceUid(sourceUids: List<String>): List<DailySetDuration>
 }

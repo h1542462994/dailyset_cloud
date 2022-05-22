@@ -14,5 +14,5 @@ interface DailySetCellMapper {
             </foreach>
         </script>
     """)
-    fun findAllDailySetCellBySourceUidBatch(sourceUids: List<String>): List<DailySetCell>
+    fun findAllBySourceUid(sourceUids: List<String>): List<DailySetCell>
 }

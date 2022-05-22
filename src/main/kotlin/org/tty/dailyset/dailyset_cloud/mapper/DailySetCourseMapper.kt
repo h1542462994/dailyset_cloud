@@ -14,5 +14,5 @@ interface DailySetCourseMapper {
             </foreach>
         </script>
     """)
-    fun findAllDailySetCourseBySourceUidBatch(sourceUids: List<String>): List<DailySetCourse>
+    fun findAllBySourceUid(sourceUids: List<String>): List<DailySetCourse>
 }

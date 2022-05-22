@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.tty.dailyset.dailyset_cloud.bean.Responses
 import org.tty.dailyset.dailyset_cloud.bean.UserState
+import org.tty.dailyset.dailyset_cloud.bean.entity.User
 import org.tty.dailyset.dailyset_cloud.bean.entity.UserActivity
 import org.tty.dailyset.dailyset_cloud.bean.enums.PlatformState
 import org.tty.dailyset.dailyset_cloud.bean.resp.UserLoginResp
@@ -58,8 +59,15 @@ class UserService {
     fun register(intent: UserRegisterIntent): Responses<UserRegisterResp> {
         val nextUidGenerate = preferenceService.nextUidGenerate
         val encryptPassword = encryptProvider.encrypt(nextUidGenerate.toString(), intent.password)
+        val user = User(
+            uid = nextUidGenerate,
+            nickname = intent.nickname,
+            email = intent.email,
+            password = encryptPassword,
+            portraitId = intent.portraitId
+        )
 
-        val result = userMapper.addUser(nextUidGenerate, intent.nickname, intent.email, encryptPassword, intent.portraitId)
+        val result = userMapper.add(user)
         return if (result >= 0) {
             preferenceService.nextUidGenerate = nextUidGenerate + 1
             Responses.ok(message = "注册成功", data = UserRegisterResp(nextUidGenerate, intent.nickname, intent.email, intent.portraitId))
@@ -74,7 +82,7 @@ class UserService {
     fun login(intent: UserLoginIntent): ResponseEntity<Responses<UserLoginResp>>   {
 
         // first check whether the user exists.
-        val user = userMapper.findUserByUid(intent.uid)
+        val user = userMapper.findByUid(intent.uid)
             ?: return ResponseEntity.ok(Responses.userNoExist())
 
         if (environmentVars.profile.isDev() && user.uid == environmentVars.beginUid) {
@@ -128,7 +136,7 @@ class UserService {
         val resultCode: Int = if (!needCreate) {
             userActivityMapper.updateByUidAndDeviceCode(userActivity)
         } else {
-            userActivityMapper.addUserActivity(userActivity)
+            userActivityMapper.add(userActivity)
         }
 
         return if (resultCode >= 0) {
@@ -159,7 +167,7 @@ class UserService {
             ?: return ResponseEntity.ok(Responses.tokenError())
 
         // get the user
-        val user = userMapper.findUserByUid(token.uid)
+        val user = userMapper.findByUid(token.uid)
             ?: return ResponseEntity.ok(Responses.userNoExist())
 
         // get the userActivity
@@ -202,7 +210,7 @@ class UserService {
             ?: return Responses.tokenError()
 
         // get the user
-        val user = userMapper.findUserByUid(token.uid)
+        val user = userMapper.findByUid(token.uid)
             ?: return Responses.userNoExist()
 
         // get the userActivity
@@ -243,7 +251,7 @@ class UserService {
             ?: return null
 
         // get the user
-        val user = userMapper.findUserByUid(token.uid) ?: return UserState(null, null, null)
+        val user = userMapper.findByUid(token.uid) ?: return UserState(null, null, null)
 
         // get the userActivity
         val userActivity = userActivityMapper.findByUidAndDeviceCode(token.uid, token.deviceCode)

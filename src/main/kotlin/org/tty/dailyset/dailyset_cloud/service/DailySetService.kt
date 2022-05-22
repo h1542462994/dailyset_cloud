@@ -2,15 +2,13 @@ package org.tty.dailyset.dailyset_cloud.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import org.tty.dailyset.dailyset_cloud.bean.DailySetUpdateItemCollection
-import org.tty.dailyset.dailyset_cloud.bean.DailySetUpdateResult
-import org.tty.dailyset.dailyset_cloud.bean.ResponseCodes
-import org.tty.dailyset.dailyset_cloud.bean.Responses
+import org.tty.dailyset.dailyset_cloud.bean.*
 import org.tty.dailyset.dailyset_cloud.bean.converters.toDailySetUpdateResultTrans
 import org.tty.dailyset.dailyset_cloud.bean.entity.*
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetDataType
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetMetaType
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetSourceType
+import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetUsageAuth
 import org.tty.dailyset.dailyset_cloud.http.DailySetUnicApi
 import org.tty.dailyset.dailyset_cloud.http.req.DailySetUpdateReqUnic
 import org.tty.dailyset.dailyset_cloud.intent.DailySetSubmitIntent
@@ -64,7 +62,7 @@ class DailySetService {
     /**
      * 获取所有Dailyset的数据.
      */
-    suspend fun getDailysetInfos(userUid: Int): Responses<List<DailySet>>  {
+    suspend fun getDailysetInfos(userUid: Int): Responses<List<DailySet>> {
         val resultList = mutableListOf<DailySet>()
 
         // 获取自动课表
@@ -75,9 +73,9 @@ class DailySetService {
         }
 
         // 获取所有的使用元数据
-        val dailySetUsageMetas = dailySetUsageMetaMapper.findAllDailySetUsageMetaByUserUid(userUid)
+        val dailySetUsageMetas = dailySetUsageMetaMapper.findAllByUserUid(userUid)
         if (dailySetUsageMetas.isNotEmpty()) {
-            val dailySets = dailySetMapper.findDailySetByUidBatch(
+            val dailySets = dailySetMapper.findAllByUid(
                 dailySetUsageMetas.map { it.dailySetUid }.distinct()
             )
             resultList.addAll(dailySets)
@@ -105,31 +103,61 @@ class DailySetService {
             }) {
             Responses.resourceReadonly()
         } else {
-            doSubmitLocalChanges(intent.submitItems)
+            val auth = findAuth(intent.userUid, intent.submitItems.dailySet) ?: return Responses.resourceNoAuth()
+            doSubmitLocalChanges(intent, auth)
             Responses.ok()
         }
     }
 
-    private fun doSubmitLocalChanges(updateResult: DailySetUpdateResult) {
+    @Suppress("UNCHECKED_CAST")
+    private fun doSubmitLocalChanges(intent: DailySetSubmitIntent, auth: DailySetUsageAuth) {
+        intent.submitItems.updateItems.forEach {
+            when(it.type) {
+                DailySetDataType.Source.value -> {
 
+                }
+                DailySetDataType.Meta.value -> {
+                    when(it.subType) {
+                        DailySetMetaType.BasicMeta.value -> {
+                            if (auth == DailySetUsageAuth.Owner) {
+                                dailySetBasicMetaResourceAdapter.submitLocalChanges(intent.submitItems.dailySet.uid, it.updates as List<DailySetUpdateItem<DailySetBasicMeta>>, intent.now)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+
+    private fun findAuth(userUid: Int, dailySet: DailySet): DailySetUsageAuth? {
+        val dailySetUsageMeta =
+            dailySetUsageMetaMapper.findByDailySetUidAndUserUid(dailySetUid = dailySet.uid, userUid = userUid)
+        return if (dailySetUsageMeta == null) {
+            null
+        } else {
+            DailySetUsageAuth.of(dailySetUsageMeta.authType)
+        }
+    }
+
 
     /**
      * 获取自动课表的更新数据，这需要请求其他的应用服务器
      */
     private suspend fun getUpdatesOfAuto(intent: DailySetUpdateIntent): DailySetUpdateResult? {
         // 获取自动课表
-        val unicTicketBind = unicTicketBindMapper.findUserTicketBindByUid(intent.userUid) ?: return null
+        val unicTicketBind = unicTicketBindMapper.findByUid(intent.userUid) ?: return null
 
         // TODO: 迁移到ZjutSchoolAdapter.
-        val response = dailySetUnicApi.dailySetUpdate(DailySetUpdateReqUnic(
-            ticketId = unicTicketBind.ticketId,
-            uid = intent.dailySet.uid,
-            type = intent.dailySet.type,
-            sourceVersion = intent.dailySet.sourceVersion,
-            matteVersion = intent.dailySet.matteVersion,
-            metaVersion = intent.dailySet.metaVersion
-        ))
+        val response = dailySetUnicApi.dailySetUpdate(
+            DailySetUpdateReqUnic(
+                ticketId = unicTicketBind.ticketId,
+                uid = intent.dailySet.uid,
+                type = intent.dailySet.type,
+                sourceVersion = intent.dailySet.sourceVersion,
+                matteVersion = intent.dailySet.matteVersion,
+                metaVersion = intent.dailySet.metaVersion
+            )
+        )
         return if (response.code == ResponseCodes.success) {
             response.data.toDailySetUpdateResultTrans()
         } else {
@@ -138,7 +166,7 @@ class DailySetService {
     }
 
     private suspend fun getUpdatesOfLocal(intent: DailySetUpdateIntent): DailySetUpdateResult? {
-        val dailySet = dailySetMapper.findDailySetByUid(intent.dailySet.uid) ?: return null
+        val dailySet = dailySetMapper.findByUid(intent.dailySet.uid) ?: return null
 
         val updateItems = mutableListOf<DailySetUpdateItemCollection<*>>()
 
@@ -203,7 +231,10 @@ class DailySetService {
         val dailySetDurationUpdateItems = DailySetUpdateItemCollection(
             type = DailySetDataType.Source.value,
             subType = DailySetSourceType.Duration.value,
-            updates = dailySetDurationResourceAdapter.getUpdatedItems(intent.dailySet.uid, intent.dailySet.sourceVersion)
+            updates = dailySetDurationResourceAdapter.getUpdatedItems(
+                intent.dailySet.uid,
+                intent.dailySet.sourceVersion
+            )
         )
         return if (dailySetDurationUpdateItems.updates.isNotEmpty()) {
             dailySetDurationUpdateItems

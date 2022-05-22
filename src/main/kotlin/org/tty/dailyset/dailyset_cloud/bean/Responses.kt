@@ -64,7 +64,7 @@ data class Responses<T>(
         fun <T> secretError(): Responses<T> {
             return fail(ResponseCodes.secretError, "secret错误")
         }
-        
+
         fun <T> resourceNoAuth(): Responses<T> {
             return fail(ResponseCodes.resourceNoAuth, "你没有对该资源的访问权限")
         }

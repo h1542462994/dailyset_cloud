@@ -43,7 +43,7 @@ class TicketService {
         }
 
         requireNotNull(userState.user)
-        val userTicketBindExisted = userTicketBindMapper.findUserTicketBindByUid(userState.user.uid)
+        val userTicketBindExisted = userTicketBindMapper.findByUid(userState.user.uid)
 
         // 当用户已绑定时
         if (userTicketBindExisted != null) {
@@ -60,7 +60,7 @@ class TicketService {
 
             return if (response.success) {
                 val userTicketBind = UserTicketBind(userState.user.uid, ticketId = response.ticket.ticketId)
-                userTicketBindMapper.addUserTicketBind(userTicketBind)
+                userTicketBindMapper.add(userTicketBind)
                 Responses.ok()
             } else {
                 Responses.fail()
@@ -83,7 +83,7 @@ class TicketService {
         requireNotNull(userState.user)
 
         // if not bind
-        val userTicketBindExisted = userTicketBindMapper.findUserTicketBindByUid(userState.user.uid)
+        val userTicketBindExisted = userTicketBindMapper.findByUid(userState.user.uid)
             ?: return Responses.fail(ResponseCodes.ticketNotExist)
 
 
@@ -104,7 +104,7 @@ class TicketService {
                 return Responses.fail(message = "在绑定中发生了错误")
             }
             val userTicketBind = UserTicketBind(userState.user.uid, ticketId = resultBind.ticket.ticketId)
-            userTicketBindMapper.updateUserTicketBindByUid(userTicketBind)
+            userTicketBindMapper.update(userTicketBind)
             return Responses.ok()
         } catch (e: Exception) {
             logger.error("on rebind", e)
@@ -124,7 +124,7 @@ class TicketService {
         }
 
         requireNotNull(userState.user)
-        val userTicketBindExisted = userTicketBindMapper.findUserTicketBindByUid(userState.user.uid)
+        val userTicketBindExisted = userTicketBindMapper.findByUid(userState.user.uid)
             ?: return Responses.fail(ResponseCodes.ticketNotExist)
 
         try {
@@ -135,7 +135,7 @@ class TicketService {
             if (!resultUnbind.success) {
                 return Responses.fail(message = "在解除绑定中发生了错误")
             }
-            userTicketBindMapper.removeUserTicketBindByUid(userTicketBindExisted.uid)
+            userTicketBindMapper.remove(userTicketBindExisted.uid)
             return Responses.ok()
         } catch (e: Exception) {
             logger.error("on unbind", e)
@@ -153,7 +153,7 @@ class TicketService {
         }
 
         requireNotNull(userState.user)
-        val userTicketBindExisted = userTicketBindMapper.findUserTicketBindByUid(userState.user.uid)
+        val userTicketBindExisted = userTicketBindMapper.findByUid(userState.user.uid)
             ?: return Responses.fail(ResponseCodes.ticketNotExist, "ticket不存在")
 
 
@@ -182,7 +182,7 @@ class TicketService {
         requireNotNull(userState.user)
 
         // if not bind
-        val userTicketBindExisted = userTicketBindMapper.findUserTicketBindByUid(userState.user.uid)
+        val userTicketBindExisted = userTicketBindMapper.findByUid(userState.user.uid)
             ?: return Responses.fail(ResponseCodes.ticketNotExist)
 
         return try {

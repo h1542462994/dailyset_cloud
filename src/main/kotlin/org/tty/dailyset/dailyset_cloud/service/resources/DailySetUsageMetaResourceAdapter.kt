@@ -8,6 +8,7 @@ import org.tty.dailyset.dailyset_cloud.bean.entity.DailySetUsageMeta
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetMetaType
 import org.tty.dailyset.dailyset_cloud.mapper.DailySetMetaLinksMapper
 import org.tty.dailyset.dailyset_cloud.mapper.DailySetUsageMetaMapper
+import java.time.LocalDateTime
 
 @Component
 class DailySetUsageMetaResourceAdapter: ResourceAdapter<DailySetUsageMeta> {
@@ -20,7 +21,7 @@ class DailySetUsageMetaResourceAdapter: ResourceAdapter<DailySetUsageMeta> {
 
     override fun getUpdatedItems(dailySetUid: String, oldVersion: Int): List<DailySetUpdateItem<DailySetUsageMeta>> {
         val dailySetMetaLinks =
-            dailySetMetaLinkMapper.findAllDailySetMetaLinkByDailySetUidAndSourceTypeAndVersionsLargerThan(
+            dailySetMetaLinkMapper.findAllByDailySetUidAndMetaTypeAndVersionsLargerThan(
                 dailySetUid,
                 DailySetMetaType.UsageMeta.value,
                 oldVersion
@@ -29,10 +30,18 @@ class DailySetUsageMetaResourceAdapter: ResourceAdapter<DailySetUsageMeta> {
             return emptyList()
         }
 
-        val dailySetUsageMetas = dailySetUsageMetaMapper.findAllDailySetUsageMetaByMetaUidBatch(
+        val dailySetUsageMetas = dailySetUsageMetaMapper.findAllByMetaUid(
             dailySetMetaLinks.map { it.metaUid }
         )
         return join2Sources(dailySetMetaLinks, dailySetUsageMetas)
+    }
+
+    override fun submitLocalChanges(
+        dailySetUid: String,
+        updateItems: List<DailySetUpdateItem<DailySetUsageMeta>>,
+        now: LocalDateTime
+    ) {
+        TODO("Not yet implemented")
     }
 
     private fun join2Sources(

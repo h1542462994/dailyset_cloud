@@ -38,7 +38,7 @@ class MessageService {
         if (messagePostSystemIntent.secret != messageSecret) {
             return Responses.secretError()
         }
-        val userTicketBinds = userTicketBindMapper.findAllUserTicketBindByTicketIdBatch(messagePostSystemIntent.targets)
+        val userTicketBinds = userTicketBindMapper.findAllByTicketId(messagePostSystemIntent.targets)
         if (userTicketBinds.isNotEmpty()) {
             val userUids = userTicketBinds.map { it.uid.toString() }.distinct()
             messageHolder.postMessage(userUids, messagePostSystemIntent.intent)

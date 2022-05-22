@@ -10,16 +10,16 @@ import org.tty.dailyset.dailyset_cloud.bean.entity.UserTicketBind
 @Mapper
 interface UserTicketBindMapper {
     @Insert("insert into user_ticket_bind (uid, ticket_id) values (#{uid}, #{ticketId})")
-    fun addUserTicketBind(userTicketBind: UserTicketBind): Int
+    fun add(userTicketBind: UserTicketBind): Int
 
     @Update("update user_ticket_bind set ticket_id = #{ticketId} where uid = #{uid}")
-    fun updateUserTicketBindByUid(userTicketBind: UserTicketBind): Int
+    fun update(userTicketBind: UserTicketBind): Int
 
     @Select("select * from user_ticket_bind where uid = #{uid}")
-    fun findUserTicketBindByUid(uid: Int): UserTicketBind?
+    fun findByUid(uid: Int): UserTicketBind?
 
     @Delete("delete from user_ticket_bind where uid = #{uid}")
-    fun removeUserTicketBindByUid(uid: Int): Int
+    fun remove(uid: Int): Int
 
     @Select("""
         <script>
@@ -29,5 +29,5 @@ interface UserTicketBindMapper {
             </foreach>
         </script>
     """)
-    fun findAllUserTicketBindByTicketIdBatch(ticketIds: List<String>): List<UserTicketBind>
+    fun findAllByTicketId(ticketIds: List<String>): List<UserTicketBind>
 }

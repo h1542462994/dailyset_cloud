@@ -8,6 +8,7 @@ import org.tty.dailyset.dailyset_cloud.bean.entity.DailySetSourceLinks
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetSourceType
 import org.tty.dailyset.dailyset_cloud.mapper.DailySetRowMapper
 import org.tty.dailyset.dailyset_cloud.mapper.DailySetSourceLinkMapper
+import java.time.LocalDateTime
 
 @Component
 class DailySetRowResourceAdapter: ResourceAdapter<DailySetRow> {
@@ -20,7 +21,7 @@ class DailySetRowResourceAdapter: ResourceAdapter<DailySetRow> {
 
     override fun getUpdatedItems(dailySetUid: String, oldVersion: Int): List<DailySetUpdateItem<DailySetRow>> {
         val dailySetSourceLinks =
-            dailySetSourceLinkMapper.findAllDailySetSourceLinkByDailySetUidAndSourceTypeAndVersionsLargerThan(
+            dailySetSourceLinkMapper.findAllByDailySetUidAndSourceTypeAndVersionsLargerThan(
                 dailySetUid,
                 DailySetSourceType.Row.value,
                 oldVersion
@@ -29,10 +30,18 @@ class DailySetRowResourceAdapter: ResourceAdapter<DailySetRow> {
             return emptyList()
         }
 
-        val dailySetRows = dailySetRowMapper.findAllDailySetRowBySourceUidBatch(
+        val dailySetRows = dailySetRowMapper.findAllBySourceUid(
             dailySetSourceLinks.map { it.sourceUid }
         )
         return join2Sources(dailySetSourceLinks, dailySetRows)
+    }
+
+    override fun submitLocalChanges(
+        dailySetUid: String,
+        updateItems: List<DailySetUpdateItem<DailySetRow>>,
+        now: LocalDateTime
+    ) {
+        TODO("Not yet implemented")
     }
 
     private fun join2Sources(

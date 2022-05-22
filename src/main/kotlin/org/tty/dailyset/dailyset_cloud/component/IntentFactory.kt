@@ -94,7 +94,8 @@ class IntentFactory {
     fun createDailySetSubmitIntent(userUid: Int, dailySetSubmitReq: DailySetSubmitReq): DailySetSubmitIntent {
         return DailySetSubmitIntent(
             userUid = userUid,
-            submitItems = dailySetSubmitReq.submitItems.toDailySetUpdateResultTrans()
+            submitItems = dailySetSubmitReq.submitItems.toDailySetUpdateResultTrans(),
+            now = dailySetSubmitReq.now
         )
     }
 

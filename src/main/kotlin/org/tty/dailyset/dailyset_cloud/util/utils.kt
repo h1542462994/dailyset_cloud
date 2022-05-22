@@ -7,6 +7,8 @@ package org.tty.dailyset.dailyset_cloud.util
 
 import okhttp3.internal.and
 import java.io.File
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.UUID
 
 fun File.child(name: String): File = File(this, name)
@@ -51,4 +53,10 @@ fun <T> MutableList<T>.addNotNull(value: T?) {
     if (value != null) {
         add(value)
     }
+}
+
+fun coerceLocalDateTime(instant: LocalDateTime, nowLocal: LocalDateTime): LocalDateTime {
+    val now = LocalDateTime.now()
+    val diff = Duration.between(now, nowLocal)
+    return instant.plus(diff)
 }

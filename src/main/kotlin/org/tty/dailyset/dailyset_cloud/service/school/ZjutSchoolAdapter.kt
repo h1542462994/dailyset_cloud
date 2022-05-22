@@ -9,15 +9,13 @@ import org.tty.dailyset.dailyset_cloud.bean.Responses
 import org.tty.dailyset.dailyset_cloud.bean.entity.DailySet
 import org.tty.dailyset.dailyset_cloud.bean.entity.DailySetBasicMeta
 import org.tty.dailyset.dailyset_cloud.bean.entity.DailySetMetaLinks
+import org.tty.dailyset.dailyset_cloud.bean.entity.DailySetUsageMeta
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetMetaType
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetType
+import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetUsageAuth
 import org.tty.dailyset.dailyset_cloud.grpc.stub.GrpcClientStubs
-import org.tty.dailyset.dailyset_cloud.http.req.DailySetInfosReqUnic
 import org.tty.dailyset.dailyset_cloud.http.DailySetUnicApi
-import org.tty.dailyset.dailyset_cloud.mapper.DailySetBasicMetaMapper
-import org.tty.dailyset.dailyset_cloud.mapper.DailySetMapper
-import org.tty.dailyset.dailyset_cloud.mapper.DailySetMetaLinksMapper
-import org.tty.dailyset.dailyset_cloud.mapper.UserTicketBindMapper
+import org.tty.dailyset.dailyset_cloud.mapper.*
 import org.tty.dailyset.dailyset_cloud.util.addNotNull
 import org.tty.dailyset.dailyset_cloud.util.uuid
 import org.tty.dailyset.dailyset_unic.grpc.TicketQueryResponse
@@ -44,6 +42,9 @@ class ZjutSchoolAdapter: SchoolAdapter {
     private lateinit var dailySetBasicMetaMapper: DailySetBasicMetaMapper
 
     @Autowired
+    private lateinit var dailySetUsageMetaMapper: DailySetUsageMetaMapper
+
+    @Autowired
     private lateinit var dailySetMetaLinksMapper: DailySetMetaLinksMapper
 
     private val logger = LoggerFactory.getLogger(ZjutSchoolAdapter::class.java)
@@ -51,7 +52,7 @@ class ZjutSchoolAdapter: SchoolAdapter {
     override suspend fun getSchoolDailySets(userUid: Int): Responses<List<DailySet>> {
 
         // 首先确认ticket状态
-        val userTicketBind = userTicketBindMapper.findUserTicketBindByUid(userUid)
+        val userTicketBind = userTicketBindMapper.findByUid(userUid)
             ?: return Responses.fail(code = ResponseCodes.ticketNotExist, message = "未绑定ticket")
         val ticketResult: TicketQueryResponse
 
@@ -76,7 +77,7 @@ class ZjutSchoolAdapter: SchoolAdapter {
         if (resultList.any {
                 "^#school.zjut.course.[\\dA-Za-z_-]+$".toRegex().matches(it.uid)
             }) {
-            dailySets.add(ensureDailySetGCreated(ticketResult.ticket.uid))
+            dailySets.add(ensureDailySetGCreated(userUid = userUid, ticketResult.ticket.uid))
         }
 
 
@@ -84,7 +85,7 @@ class ZjutSchoolAdapter: SchoolAdapter {
     }
 
     private fun getDailySet(): DailySet? {
-        return dailySetMapper.findDailySetByUid(dailySetUid)
+        return dailySetMapper.findByUid(dailySetUid)
     }
 
     /**
@@ -107,20 +108,73 @@ class ZjutSchoolAdapter: SchoolAdapter {
     /**
      * 确定生成初始化的类似 **#school.zjut.course.2018x.g**的日程表，用于存放自动课表的其他信息（例如基础信息，主题等等）
      */
-    private fun ensureDailySetGCreated(studentUid: String): DailySet {
+    private fun ensureDailySetGCreated(userUid: Int, studentUid: String): DailySet {
         val dailySetGUid = "#school.zjut.course.${studentUid}.g"
-        val dailySet = dailySetMapper.findDailySetByUid(dailySetGUid)
-        return if (dailySet != null) {
-            dailySet
-        } else {
+        var dailySet = dailySetMapper.findByUid(dailySetGUid)
+
+        if (dailySet == null) {
             // 默认名称是自动课表，图标为空.
             val dailySetNew = DailySet(dailySetGUid, DailySetType.Generated.value, 1, 1, 1)
             val dailySetBasicMeta = DailySetBasicMeta(uuid(), "自动课表", "")
             val dailySetMetaLinks = DailySetMetaLinks(dailySetGUid, DailySetMetaType.BasicMeta.value, dailySetBasicMeta.metaUid, 1, 0, 0, LocalDateTime.now())
-            dailySetMapper.addDailySet(dailySetNew)
-            dailySetBasicMetaMapper.addDailySetBasicMeta(dailySetBasicMeta)
-            dailySetMetaLinksMapper.addDailySetMetaLinks(dailySetMetaLinks)
-            dailySetNew
+            dailySetMapper.add(dailySetNew)
+            dailySetBasicMetaMapper.add(dailySetBasicMeta)
+            dailySetMetaLinksMapper.add(dailySetMetaLinks)
+            dailySet = dailySetNew
         }
+
+        // ensure add usage data
+        var dailySetUsageMeta = dailySetUsageMetaMapper.findByDailySetUidAndUserUid(dailySetGUid, userUid)
+        var metaVersion = dailySet.metaVersion
+        if (dailySetUsageMeta == null) {
+            metaVersion += 1
+            dailySetUsageMeta = DailySetUsageMeta(
+                metaUid = uuid(),
+                dailySetUid = dailySetGUid,
+                userUid = userUid,
+                authType = DailySetUsageAuth.Owner.value
+            )
+            dailySetUsageMetaMapper.add(dailySetUsageMeta)
+            dailySetMetaLinksMapper.add(
+                DailySetMetaLinks(
+                    dailySetUid = dailySetGUid,
+                    metaType = DailySetMetaType.UsageMeta.value,
+                    metaUid = dailySetUsageMeta.metaUid,
+                    insertVersion = metaVersion,
+                    updateVersion = 0,
+                    removeVersion = 0,
+                    lastTick = LocalDateTime.now()
+                )
+            )
+        } else {
+            if (dailySetUsageMeta.authType != DailySetUsageAuth.Owner.value) {
+                metaVersion += 1
+
+                dailySetUsageMetaMapper.update(
+                    dailySetUsageMeta.copy(
+                        authType = DailySetUsageAuth.Owner.value
+                    )
+                )
+                val dailySetMetaLinks = dailySetMetaLinksMapper.findByDailySetUidAndMetaTypeAndMetaUid(
+                    dailySetUid = dailySetGUid,
+                    metaType = DailySetMetaType.UsageMeta.value,
+                    metaUid = dailySetUsageMeta.metaUid
+                )!!
+                dailySetMetaLinksMapper.update(
+                    dailySetMetaLinks.copy(
+                        updateVersion = metaVersion,
+                        lastTick = LocalDateTime.now()
+                    )
+                )
+            }
+        }
+
+        if (metaVersion != dailySet.metaVersion) {
+            dailySetMapper.update(
+                dailySet.copy(metaVersion = metaVersion)
+            )
+        }
+
+        return dailySet
     }
 }
