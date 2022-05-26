@@ -56,13 +56,24 @@ object ResponseCodes {
      */
     const val ticketNotExist = 10011
 
+    /**
+     * unic server error
+     */
     const val unicError = 10012
 
-    const val resourceNoAuth = 10013
+    /**
+     * resource is not authed
+     */
+    const val resourceNoAuth = 106
 
     /**
-     * readOnly
+     * resource is readOnly
      */
-    const val resourceReadOnly = 10014
+    const val resourceReadOnly = 107
+
+    /**
+     * resource is not exist
+     */
+    const val resourceNotExist = 108
 
 }

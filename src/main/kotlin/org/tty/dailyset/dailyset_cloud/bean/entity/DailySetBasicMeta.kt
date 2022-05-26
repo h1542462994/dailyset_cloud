@@ -1,9 +1,10 @@
 package org.tty.dailyset.dailyset_cloud.bean.entity
+import kotlinx.serialization.Serializable
 
 /**
  * **meta-basicMeta(1)**
  */
-@kotlinx.serialization.Serializable
+@Serializable
 data class DailySetBasicMeta(
     val metaUid: String,
     val name: String,

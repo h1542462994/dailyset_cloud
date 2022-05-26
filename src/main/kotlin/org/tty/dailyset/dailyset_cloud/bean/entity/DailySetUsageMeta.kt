@@ -1,12 +1,13 @@
 package org.tty.dailyset.dailyset_cloud.bean.entity
+import kotlinx.serialization.Serializable
 
 /**
  * **meta-usageMeta(2)**
  */
-@kotlinx.serialization.Serializable
+@Serializable
 data class DailySetUsageMeta(
     val metaUid: String,
     val dailySetUid: String,
-    val userUid: Int,
+    val userUid: String,
     val authType: Int
 )

@@ -11,7 +11,7 @@ package org.tty.dailyset.dailyset_cloud.bean.entity
  * entity class -> table *user*
  */
 data class User(
-    val uid: Int,
+    val uid: String,
     val nickname: String,
     val password: String,
     val email: String,

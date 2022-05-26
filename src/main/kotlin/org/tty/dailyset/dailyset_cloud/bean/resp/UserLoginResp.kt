@@ -6,7 +6,7 @@
 package org.tty.dailyset.dailyset_cloud.bean.resp
 
 class UserLoginResp(
-    val uid: Int,
+    val uid: String,
     val nickname: String,
     val email: String,
     val portraitId: String,

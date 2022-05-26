@@ -14,21 +14,6 @@ import org.tty.dailyset.dailyset_unic.grpc.TicketQueryResponse
 import org.tty.dailyset.dailyset_cloud.grpc.TicketBindInfo.TicketStatus as CTicketStatus
 
 
-fun TicketQueryResponse.toCurrentBindInfoResponse(): CurrentBindInfoResponse {
-    return CurrentBindInfoResponse {
-        code = this@toCurrentBindInfoResponse.code
-        message = this@toCurrentBindInfoResponse.message
-        bindInfo = TicketBindInfo {
-            status = this@toCurrentBindInfoResponse.ticket.status.toCTicketStatus()
-            uid = this@toCurrentBindInfoResponse.studentInfo.uid
-            departmentName = this@toCurrentBindInfoResponse.studentInfo.departmentName
-            className = this@toCurrentBindInfoResponse.studentInfo.className
-            name = this@toCurrentBindInfoResponse.studentInfo.name
-            grade = this@toCurrentBindInfoResponse.studentInfo.grade
-        }
-    }
-}
-
 fun TicketQueryResponse.toRTicketInfoResp(): Responses<TicketInfoResp> {
     return Responses(
         code = this.code,

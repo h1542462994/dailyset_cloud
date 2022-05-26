@@ -27,7 +27,8 @@ class DailySetController {
         requireNotNull(userState)
         requireNotNull(userState.user)
 
-        return dailySetService.getDailysetInfos(userState.user.uid)
+        val intent = intentFactory.createDailySetInfoIntent(userState.user.uid)
+        return dailySetService.getDailysetInfos(intent)
     }
 
     @PostMapping("/dailyset/update")
@@ -36,7 +37,7 @@ class DailySetController {
         requireNotNull(userState.user)
 
         val intent = intentFactory.createDailySetUpdateIntent(userState.user.uid, dailysetUpdateReq)
-        return Responses.ok(data = dailySetService.getUpdates(intent))
+        return dailySetService.getUpdates(intent)
     }
 
     @PostMapping("/dailyset/submit")

@@ -18,5 +18,6 @@ interface PreferenceMapper {
     fun setPreference(preferenceName: String, value: String): Int
 
     @Update("update preference set use_default = True where preference_name = #{preferenceName}")
+    @Deprecated("it is not be used, it will be removed recently.")
     fun resetReference(preferenceName: String): Int
 }

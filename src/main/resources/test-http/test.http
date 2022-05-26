@@ -21,8 +21,8 @@ POST http://{{location}}/user/login
 Content-Type: application/json
 
 {
-    "uid": "100002",
-    "password": "12345678",
+    "uid": "100010",
+    "password": "123456",
     "deviceCode": "3fffb736-ebc1-429e-8a54-f66670fd7064",
     "deviceName": "HttpUnitTest",
     "platformCode": "2"
@@ -64,6 +64,19 @@ Authorization: Bearer {{auth_token}}
 
 {
   "uid": "#school.zjut.course.201806061201",
+  "type": 2,
+  "sourceVersion": 0,
+  "matteVersion": 0,
+  "metaVersion": 0
+}
+
+### /dailyset/update <course.g>
+POST http://{{location}}/dailyset/update
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "uid": "#school.zjut.course.201806061201.g",
   "type": 2,
   "sourceVersion": 0,
   "matteVersion": 0,

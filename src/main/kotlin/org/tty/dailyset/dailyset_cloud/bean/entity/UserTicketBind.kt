@@ -9,6 +9,6 @@ package org.tty.dailyset.dailyset_cloud.bean.entity
  * entity class -> table user_ticket_bind
  */
 class UserTicketBind(
-    val uid: Int,
+    val uid: String,
     val ticketId: String
 )

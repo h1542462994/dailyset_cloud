@@ -37,9 +37,9 @@ class JwtToken {
             }
             val uid = audience[0]
             if (expiredAt.before(Date())) {
-                return UserJwtDTO(uid.toInt(), expiredAt, issuedAt, false, deviceCode)
+                return UserJwtDTO(uid, expiredAt, issuedAt, false, deviceCode)
             }
-            return UserJwtDTO(uid.toInt(), expiredAt, issuedAt, true, deviceCode)
+            return UserJwtDTO(uid, expiredAt, issuedAt, true, deviceCode)
         } catch (e: JWTDecodeException) {
             return null
         } catch (e: NullPointerException) {
@@ -52,7 +52,7 @@ class JwtToken {
     fun sign(user: User, userActivity: UserActivity): String {
         return JWT.create()
             .withExpiresAt(Date(System.currentTimeMillis().plus(environmentVars.jwtTokenExpireTime)))
-            .withAudience(user.uid.toString())
+            .withAudience(user.uid)
             .withIssuer(environmentVars.jwtTokenIssuer)
             .withIssuedAt(Date())
             .withClaim(DEVICE_CODE, userActivity.deviceCode)

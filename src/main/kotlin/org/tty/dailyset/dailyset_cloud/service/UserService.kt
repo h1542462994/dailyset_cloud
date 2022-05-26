@@ -57,8 +57,8 @@ class UserService {
      * register user
      */
     fun register(intent: UserRegisterIntent): Responses<UserRegisterResp> {
-        val nextUidGenerate = preferenceService.nextUidGenerate
-        val encryptPassword = encryptProvider.encrypt(nextUidGenerate.toString(), intent.password)
+        val nextUidGenerate = preferenceService.nextUidGenerate.toString()
+        val encryptPassword = encryptProvider.encrypt(nextUidGenerate, intent.password)
         val user = User(
             uid = nextUidGenerate,
             nickname = intent.nickname,
@@ -69,7 +69,6 @@ class UserService {
 
         val result = userMapper.add(user)
         return if (result >= 0) {
-            preferenceService.nextUidGenerate = nextUidGenerate + 1
             Responses.ok(message = "注册成功", data = UserRegisterResp(nextUidGenerate, intent.nickname, intent.email, intent.portraitId))
         } else {
             Responses.fail()

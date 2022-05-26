@@ -1,9 +1,10 @@
 package org.tty.dailyset.dailyset_cloud.bean.entity
+import kotlinx.serialization.Serializable
 
 /**
  * **source-row(2)**
  */
-@kotlinx.serialization.Serializable
+@Serializable
 data class DailySetRow(
     val sourceUid: String,
     val tableUid: String,

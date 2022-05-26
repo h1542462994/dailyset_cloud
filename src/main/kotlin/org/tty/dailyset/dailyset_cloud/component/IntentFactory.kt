@@ -78,7 +78,16 @@ class IntentFactory {
         )
     }
 
-    fun createDailySetUpdateIntent(userUid: Int, dailysetUpdateReq: DailySetUpdateReq): DailySetUpdateIntent {
+    /**
+     * create [DailySetInfoIntent]
+     */
+    fun createDailySetInfoIntent(userUid: String): DailySetInfoIntent {
+        return DailySetInfoIntent(
+            userUid = userUid
+        )
+    }
+
+    fun createDailySetUpdateIntent(userUid: String, dailysetUpdateReq: DailySetUpdateReq): DailySetUpdateIntent {
         return DailySetUpdateIntent(
             userUid = userUid,
             dailySet = DailySet(
@@ -91,7 +100,7 @@ class IntentFactory {
         )
     }
 
-    fun createDailySetSubmitIntent(userUid: Int, dailySetSubmitReq: DailySetSubmitReq): DailySetSubmitIntent {
+    fun createDailySetSubmitIntent(userUid: String, dailySetSubmitReq: DailySetSubmitReq): DailySetSubmitIntent {
         return DailySetSubmitIntent(
             userUid = userUid,
             submitItems = dailySetSubmitReq.submitItems.toDailySetUpdateResultTrans(),

@@ -8,7 +8,7 @@ INSERT INTO `dailyset_table` (source_uid, name)
 VALUES ('#school.zjut.0', '浙江工业大学默认时间表');
 
 INSERT INTO `dailyset_usage_meta` (meta_uid, dailyset_uid, user_uid, auth_type)
-VALUES ('#school.zjut.0', '#school.zjut.global', 1001, 0);
+VALUES ('#school.zjut.0', '#school.zjut.global', '1001', 0);
 
 INSERT INTO `dailyset_meta_links` (dailyset_uid, meta_type, meta_uid, insert_version, update_version, remove_version)
 VALUES ('#school.zjut.global', 2, '#school.zjut.0', 1, 1, 0);

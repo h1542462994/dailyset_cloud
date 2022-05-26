@@ -47,7 +47,7 @@ class TicketService {
 
         // 当用户已绑定时
         if (userTicketBindExisted != null) {
-            return Responses.fail(ResponseCodes.ticketExist, "ticket已绑定")
+            return Responses.ticketExist()
         }
 
         try {
@@ -63,11 +63,11 @@ class TicketService {
                 userTicketBindMapper.add(userTicketBind)
                 Responses.ok()
             } else {
-                Responses.fail()
+                Responses.fail(message = "绑定失败")
             }
         } catch (e: Exception) {
             logger.error("on ticketBind", e)
-            return Responses.fail(message = "服务发生了未知异常 ${e.message}")
+            return Responses.unicError(message = "服务发生了未知异常 ${e.message}")
         }
     }
 
@@ -84,7 +84,7 @@ class TicketService {
 
         // if not bind
         val userTicketBindExisted = userTicketBindMapper.findByUid(userState.user.uid)
-            ?: return Responses.fail(ResponseCodes.ticketNotExist)
+            ?: return Responses.ticketExist()
 
 
         try {
@@ -93,7 +93,7 @@ class TicketService {
                 ticketId = userTicketBindExisted.ticketId
             }
             if (!resultUnbind.success) {
-                return Responses.fail(message = "在解除绑定中发生了错误")
+                return Responses.unicError(message = "在解除绑定中发生了错误")
             }
             // call bind
             val resultBind = grpcClientStubs.getTicketClient().bind {
@@ -101,14 +101,14 @@ class TicketService {
                 password = intent.password
             }
             if (!resultBind.success) {
-                return Responses.fail(message = "在绑定中发生了错误")
+                return Responses.unicError(message = "在绑定中发生了错误")
             }
             val userTicketBind = UserTicketBind(userState.user.uid, ticketId = resultBind.ticket.ticketId)
             userTicketBindMapper.update(userTicketBind)
             return Responses.ok()
         } catch (e: Exception) {
             logger.error("on rebind", e)
-            return Responses.fail(message = "服务发生了未知异常 ${e.message}")
+            return Responses.unicError(message = "服务发生了未知异常 ${e.message}")
         }
 
 
@@ -125,7 +125,7 @@ class TicketService {
 
         requireNotNull(userState.user)
         val userTicketBindExisted = userTicketBindMapper.findByUid(userState.user.uid)
-            ?: return Responses.fail(ResponseCodes.ticketNotExist)
+            ?: return Responses.ticketNotExist()
 
         try {
             // call unbind
@@ -139,7 +139,7 @@ class TicketService {
             return Responses.ok()
         } catch (e: Exception) {
             logger.error("on unbind", e)
-            return Responses.fail(message = "服务发生了未知异常 ${e.message}")
+            return Responses.unicError(message = "服务发生了未知异常 ${e.message}")
         }
     }
 
@@ -154,7 +154,7 @@ class TicketService {
 
         requireNotNull(userState.user)
         val userTicketBindExisted = userTicketBindMapper.findByUid(userState.user.uid)
-            ?: return Responses.fail(ResponseCodes.ticketNotExist, "ticket不存在")
+            ?: return Responses.ticketNotExist()
 
 
 
@@ -165,7 +165,7 @@ class TicketService {
             response.toRTicketInfoResp()
         } catch (e: Exception) {
             logger.error("on ticket query", e)
-            Responses.fail(message = "服务发生了未知异常 ${e.message}")
+            Responses.unicError(message = "服务发生了未知异常 ${e.message}")
         }
 
     }
@@ -183,7 +183,7 @@ class TicketService {
 
         // if not bind
         val userTicketBindExisted = userTicketBindMapper.findByUid(userState.user.uid)
-            ?: return Responses.fail(ResponseCodes.ticketNotExist)
+            ?: return Responses.ticketNotExist()
 
         return try {
             val response = grpcClientStubs.getTicketClient().forceFetch {
@@ -192,11 +192,11 @@ class TicketService {
             if (response.success) {
                 Responses.ok()
             } else {
-                Responses.fail()
+                Responses.fail(message = "强制刷新失败")
             }
         } catch (e: Exception) {
             logger.error("on ticket force fetch", e)
-            Responses.fail(message = "服务发生了未知异常 ${e.message}")
+            Responses.unicError(message = "服务发生了未知异常 ${e.message}")
         }
     }
 

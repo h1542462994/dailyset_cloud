@@ -40,7 +40,7 @@ class MessageService {
         }
         val userTicketBinds = userTicketBindMapper.findAllByTicketId(messagePostSystemIntent.targets)
         if (userTicketBinds.isNotEmpty()) {
-            val userUids = userTicketBinds.map { it.uid.toString() }.distinct()
+            val userUids = userTicketBinds.map { it.uid }.distinct()
             messageHolder.postMessage(userUids, messagePostSystemIntent.intent)
         }
         return Responses.ok()

@@ -33,7 +33,7 @@ class EnvironmentVars {
     /**
      * begin uid: 100001
      */
-    val beginUid = 100001
+    val beginUid = "100001"
 
     /**
      * defaultPortraitFileName: `dailyset.env.default_portrait`

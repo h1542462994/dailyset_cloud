@@ -17,6 +17,7 @@ import java.nio.file.Path
 import javax.annotation.PostConstruct
 
 @Component
+@Deprecated("not used yet.")
 class Initializer {
     @Autowired
     private lateinit var context: ConfigurableApplicationContext

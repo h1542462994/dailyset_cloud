@@ -15,7 +15,7 @@ import org.tty.dailyset.dailyset_cloud.service.UserService
  * user for [UserService]
  */
 class UserLoginIntent(
-    val uid: Int,
+    val uid: String,
     val password: String,
     val deviceCode: String?,
     val deviceName: String,

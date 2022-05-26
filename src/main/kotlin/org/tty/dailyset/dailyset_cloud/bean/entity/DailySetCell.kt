@@ -2,18 +2,19 @@ package org.tty.dailyset.dailyset_cloud.bean.entity
 
 import org.tty.dailyset.dailyset_cloud.bean.serializer.LocalTimeSerializer
 import java.time.LocalTime
+import kotlinx.serialization.Serializable
 
 /**
  * **source-cell(3)**
  */
-@kotlinx.serialization.Serializable
+@Serializable
 data class DailySetCell(
     val sourceUid: String,
     val rowUid: String,
     val currentIndex: Int,
-    @kotlinx.serialization.Serializable(with = LocalTimeSerializer::class)
+    @Serializable(with = LocalTimeSerializer::class)
     val startTime: LocalTime,
-    @kotlinx.serialization.Serializable(with = LocalTimeSerializer::class)
+    @Serializable(with = LocalTimeSerializer::class)
     val endTime: LocalTime,
     val normalType: Int,
     val serialIndex: Int

@@ -16,10 +16,10 @@ interface UserTicketBindMapper {
     fun update(userTicketBind: UserTicketBind): Int
 
     @Select("select * from user_ticket_bind where uid = #{uid}")
-    fun findByUid(uid: Int): UserTicketBind?
+    fun findByUid(uid: String): UserTicketBind?
 
     @Delete("delete from user_ticket_bind where uid = #{uid}")
-    fun remove(uid: Int): Int
+    fun remove(uid: String): Int
 
     @Select("""
         <script>

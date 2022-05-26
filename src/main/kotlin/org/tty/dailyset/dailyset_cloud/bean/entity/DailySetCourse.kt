@@ -1,8 +1,9 @@
 package org.tty.dailyset.dailyset_cloud.bean.entity
 
 import org.tty.dailyset.dailyset_cloud.bean.enums.DailySetPeriodCode
+import kotlinx.serialization.Serializable
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class DailySetCourse(
     val sourceUid: String,
     val year: Int,

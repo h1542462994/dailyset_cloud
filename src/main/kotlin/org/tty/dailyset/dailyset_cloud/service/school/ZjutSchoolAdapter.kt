@@ -49,11 +49,11 @@ class ZjutSchoolAdapter: SchoolAdapter {
 
     private val logger = LoggerFactory.getLogger(ZjutSchoolAdapter::class.java)
 
-    override suspend fun getSchoolDailySets(userUid: Int): Responses<List<DailySet>> {
+    override suspend fun getSchoolDailySets(userUid: String): Responses<List<DailySet>> {
 
         // 首先确认ticket状态
         val userTicketBind = userTicketBindMapper.findByUid(userUid)
-            ?: return Responses.fail(code = ResponseCodes.ticketNotExist, message = "未绑定ticket")
+            ?: return Responses.ticketNotExist()
         val ticketResult: TicketQueryResponse
 
         try {
@@ -61,7 +61,7 @@ class ZjutSchoolAdapter: SchoolAdapter {
                 ticketId = userTicketBind.ticketId
             }
         } catch (e: StatusRuntimeException) {
-            return Responses.fail(code = ResponseCodes.unicError, message = "上游服务器出现了错误")
+            return Responses.unicError()
         }
 
         // 没有成功获取到信息
@@ -108,7 +108,7 @@ class ZjutSchoolAdapter: SchoolAdapter {
     /**
      * 确定生成初始化的类似 **#school.zjut.course.2018x.g**的日程表，用于存放自动课表的其他信息（例如基础信息，主题等等）
      */
-    private fun ensureDailySetGCreated(userUid: Int, studentUid: String): DailySet {
+    private fun ensureDailySetGCreated(userUid: String, studentUid: String): DailySet {
         val dailySetGUid = "#school.zjut.course.${studentUid}.g"
         var dailySet = dailySetMapper.findByUid(dailySetGUid)
 

@@ -9,10 +9,10 @@ import org.tty.dailyset.dailyset_cloud.bean.entity.DailySetUsageMeta
 @Mapper
 interface DailySetUsageMetaMapper {
     @Select("select * from dailyset_usage_meta where user_uid = #{userUid}")
-    fun findAllByUserUid(userUid: Int): List<DailySetUsageMeta>
+    fun findAllByUserUid(userUid: String): List<DailySetUsageMeta>
 
     @Select("select * from dailyset_usage_meta where dailyset_uid = #{dailySetUid} and user_uid = #{userUid} limit 1")
-    fun findByDailySetUidAndUserUid(dailySetUid: String, userUid: Int): DailySetUsageMeta?
+    fun findByDailySetUidAndUserUid(dailySetUid: String, userUid: String): DailySetUsageMeta?
 
     @Select("""
         <script>

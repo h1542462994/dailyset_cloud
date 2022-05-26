@@ -24,7 +24,7 @@ interface UserActivityMapper {
     fun add(userActivity: UserActivity): Int
 
     @Select("select * from user_activity where uid = #{uid} and device_code = #{deviceCode}")
-    fun findByUidAndDeviceCode(uid: Int, deviceCode: String): UserActivity?
+    fun findByUidAndDeviceCode(uid: String, deviceCode: String): UserActivity?
 
     @Update("update user_activity set device_name = #{deviceName}, platform_code = #{platformCode}, state = #{state}, last_active = #{lastActive} where uid = #{uid} and device_code = #{deviceCode}")
     fun updateByUidAndDeviceCode(userActivity: UserActivity): Int

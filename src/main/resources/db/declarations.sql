@@ -17,7 +17,7 @@ USE `dailyset_cloud`;
 # create table `user` dsl
 CREATE TABLE IF NOT EXISTS `user`
 (
-    `uid`         INTEGER      NOT NULL UNIQUE,                # 用户标识，唯一，从100001递增
+    `uid`         VARCHAR(64)  NOT NULL UNIQUE,                # 用户标识，唯一，从100001递增
     `nickname`    VARCHAR(64)  NOT NULL DEFAULT 'no_assigned', # 用户昵称，可随时更改
     `email`       VARCHAR(256) NULL,                           # 邮箱，将会用于后续的用户验证
     `password`    VARCHAR(256) NOT NULL,                       # 密码
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `preference`
 # create table `user_activity` dsl
 CREATE TABLE IF NOT EXISTS `user_activity`
 (
-    `uid`           INTEGER      NOT NULL, # 用户标识，唯一，从100001递增
+    `uid`           VARCHAR(64)  NOT NULL, # 用户标识，唯一，从100001递增
     `device_code`   VARCHAR(256) NOT NULL,
     `device_name`   VARCHAR(256) NOT NULL,
     `platform_code` INTEGER DEFAULT 0,
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `user_activity`
 # create table `user_ticket_bind` dsl
 CREATE TABLE IF NOT EXISTS `user_ticket_bind`
 (
-    `uid`       INTEGER      NOT NULL UNIQUE, # 用户标识，唯一，从100001递增
+    `uid`       VARCHAR(64)  NOT NULL UNIQUE, # 用户标识，唯一，从100001递增
     `ticket_id` VARCHAR(256) NOT NULL,
     PRIMARY KEY (uid)
 );
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `dailyset_meta_links`
     `update_version` INTEGER     NOT NULL, # 更新版本
     `remove_version` INTEGER     NOT NULL, # 移除版本
     `last_tick`      DATETIME DEFAULT '1970-1-1 0:00:00',
-    INDEX `dailyset_source_links_index1`(`dailyset_uid`, `meta_type`)
+    INDEX `dailyset_source_links_index1` (`dailyset_uid`, `meta_type`)
 );
 
 # create table `dailyset_basic_meta` dsl, meta_type = 1, [single]
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `dailyset_usage_meta`
 (
     `meta_uid`     VARCHAR(64) NOT NULL UNIQUE, # 资源的id
     `dailyset_uid` VARCHAR(64) NOT NULL,        # 资源的id
-    `user_uid`     INTEGER     NOT NULL,        # 用户的id
+    `user_uid`     VARCHAR(64) NOT NULL,        # 用户的id
     `auth_type`    INTEGER     NOT NULL,        # 授权类型
     PRIMARY KEY (meta_uid)
 );
@@ -108,9 +108,9 @@ CREATE TABLE IF NOT EXISTS `dailyset_source_links`
     `source_uid`     VARCHAR(64) NOT NULL, # 资源的uid
     `insert_version` INTEGER     NOT NULL, # 插入版本
     `update_version` INTEGER     NOT NULL, # 更新版本
-    `remove_version` INTEGER     NOT NULL,  # 删除版本
+    `remove_version` INTEGER     NOT NULL, # 删除版本
     `last_tick`      DATETIME DEFAULT '1970-1-1 0:00:00',
-    INDEX `dailyset_source_links_index1`(`dailyset_uid`, `source_type`)
+    INDEX `dailyset_source_links_index1` (`dailyset_uid`, `source_type`)
 );
 
 # create table `dailyset_table` dsl, source_type = 1
@@ -181,12 +181,12 @@ CREATE TABLE IF NOT EXISTS `dailyset_course`
 CREATE TABLE IF NOT EXISTS `dailyset_matte_links`
 (
     `dailyset_uid`   VARCHAR(64) NOT NULL, # 日程表的uid
-    `matte_type`      INTEGER     NOT NULL, # 元数据类型
-    `matte_uid`       VARCHAR(64) NOT NULL, # 元数据的uid
+    `matte_type`     INTEGER     NOT NULL, # 元数据类型
+    `matte_uid`      VARCHAR(64) NOT NULL, # 元数据的uid
     `insert_version` INTEGER     NOT NULL, # 插入版本
     `update_version` INTEGER     NOT NULL, # 更新版本
     `remove_version` INTEGER     NOT NULL, # 移除版本
     `last_tick`      DATETIME DEFAULT '1970-1-1 0:00:00',
-    INDEX `dailyset_matte_links_index1`(`dailyset_uid`, `matte_type`)
+    INDEX `dailyset_matte_links_index1` (`dailyset_uid`, `matte_type`)
 );
 

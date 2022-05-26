@@ -17,6 +17,6 @@ interface UserMapper {
     fun add(user: User): Int
 
     @Select("select * from user where uid = #{uid}")
-    fun findByUid(uid: Int): User?
+    fun findByUid(uid: String): User?
 
 }

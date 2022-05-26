@@ -32,11 +32,12 @@ class PreferenceService {
         return result > 0
     }
 
-    var nextUidGenerate: Int = 0
-        get() = getValueOrDefault(PreferenceName.NEXT_UID_GENERATE).toInt()
-        set(value) {
-            field = value
-            setValue(PreferenceName.NEXT_UID_GENERATE, value.toString())
+
+    val nextUidGenerate: Int
+        get() {
+            val value = getValueOrDefault(PreferenceName.NEXT_UID_GENERATE).toInt()
+            setValue(PreferenceName.NEXT_UID_GENERATE, (value + 1).toString())
+            return value
         }
 
 

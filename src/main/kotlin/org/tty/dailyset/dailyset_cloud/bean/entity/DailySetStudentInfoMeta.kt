@@ -1,6 +1,7 @@
 package org.tty.dailyset.dailyset_cloud.bean.entity
+import kotlinx.serialization.Serializable
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class DailySetStudentInfoMeta(
     val metaUid: String,
     val departmentName: String,

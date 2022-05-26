@@ -25,7 +25,7 @@ enum class PlatformCode(
 
     companion object {
         fun of(code: Int): PlatformCode {
-            return values().first { it.code == code }
+            return values().single { it.code == code }
         }
     }
 }

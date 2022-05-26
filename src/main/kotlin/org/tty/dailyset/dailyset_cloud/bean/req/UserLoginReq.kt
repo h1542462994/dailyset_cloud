@@ -17,14 +17,14 @@ import org.tty.dailyset.dailyset_cloud.util.anyIntEmpty
  * used for [UserController]
  */
 class UserLoginReq(
-    val uid: Int? = null,
+    val uid: String? = null,
     val password: String? = null,
     val deviceCode: String? = null,
     val deviceName: String? = null,
     val platformCode: Int? = null
 ) {
     fun verify(): Boolean {
-        return !anyIntEmpty(uid, platformCode) && !anyTextEmpty(password, deviceName)
+        return !anyIntEmpty(platformCode) && !anyTextEmpty(uid, password, deviceName)
                 && PlatformCode.values().any { it.code == platformCode }
     }
 }
