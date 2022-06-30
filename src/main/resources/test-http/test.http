@@ -21,8 +21,8 @@ POST http://{{location}}/user/login
 Content-Type: application/json
 
 {
-    "uid": "100010",
-    "password": "123456",
+    "uid": "100002",
+    "password": "12345678",
     "deviceCode": "3fffb736-ebc1-429e-8a54-f66670fd7064",
     "deviceName": "HttpUnitTest",
     "platformCode": "2"
@@ -65,7 +65,7 @@ Authorization: Bearer {{auth_token}}
 {
   "uid": "#school.zjut.course.201806061201",
   "type": 2,
-  "sourceVersion": 0,
+  "sourceVersion": 29,
   "matteVersion": 0,
   "metaVersion": 0
 }

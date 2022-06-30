@@ -30,7 +30,7 @@ class GrpcMessageService: MessageServiceCoroutineGrpc.MessageServiceImplBase() {
             requireNotNull(userState.user)
 
             try {
-                val messageChannel = messageHolder.connectMessageFlow(userState.user.uid.toString())
+                val messageChannel = messageHolder.connectMessageFlow(userState.user.uid)
                 messageChannel.collect {
                     responseChannel.send(MessageBundle {
                         topic = it.topic
@@ -43,7 +43,7 @@ class GrpcMessageService: MessageServiceCoroutineGrpc.MessageServiceImplBase() {
             } catch (e: Exception) {
                 throw e
             } finally {
-                messageHolder.disconnectMessageFlow(userState.user.uid.toString())
+                messageHolder.disconnectMessageFlow(userState.user.uid)
                 responseChannel.close()
             }
         } else {
